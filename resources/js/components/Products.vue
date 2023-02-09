@@ -27,7 +27,8 @@
                 price: 0,
                 qty: 0,
                 code: 0,         
-            }
+            },
+            /* grand_total: 0, */
         }
         },
         props: ['products'],
@@ -37,7 +38,6 @@
                     axios.post('/api/searchProduct',this.form)
                     .then(res => {
                         this.results = res.data  
-                        console.log(res) 
                     })
                     .catch(error => this.errors = error.response.data.errors)
         
@@ -48,7 +48,7 @@
                 this.results2.product = id.product;
                 this.results2.description = id.description;
                 this.results2.price = id.price;
-                this.results2.qty = id.qty;
+                //this.results2.qty = id.qty;
                 this.results2.code = id.code;
                 this.form.val = id.product;
                 this.results = []
@@ -67,7 +67,10 @@
                     'id': value.id,
                 });
                 //this.form.val = null;
-                console.log(this.results3)
+                /* console.log(this.results3)
+                this.results3.forEach(e => {
+                    this.grand_total += e.total;
+                }) */
             },
             clearForm() {
                 this.form.val = ''

@@ -26,7 +26,7 @@
                 <div class="col-12">
                     <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Initial Data</h3>
+                        <h3 class="card-title">CHARGE SALES INVOICE</h3>
                         <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                             <i class="fas fa-minus"></i>
@@ -85,7 +85,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="form-group">
-                                        <label>Total</label>
+                                        <label>Amount</label>
                                         <input type="text" class="form-control" id="" placeholder="Total" v-model="productList.total">
                                         <small class="text-danger" v-if="errors.desc">{{ errors.desc[0] }}</small>
                                     </div>
@@ -93,10 +93,10 @@
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <label>&nbsp;</label> <br>
-                            <button type="submit" class="btn btn-success">
+                            <button :class="[(checkform?'':'d-none')]" type="submit" class="btn btn-success">
                             Add
                             </button>
-                            <button type="button" @click="save()" class="btn btn-success">
+                            <button :class="[(checkform?'':'d-none')]"  type="button" @click="save()" class="btn btn-info">
                             Save
                             </button>
                                     </div>
@@ -104,13 +104,14 @@
                             </div>
                             
                         </form>
+                        
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Item</th>
                                         <th>Quantity</th>                                    
                                         <th>Unit Price</th>                            
-                                        <th>Total</th>                        
+                                        <th>Amount</th>                        
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -131,8 +132,22 @@
                                         <td>
                                            <button type="button" @click="removeItem(index)" class="btn btn-danger btn-sm">
                                             Remove </button>
-                                           <!-- <button type="button" @click="check()" class="btn btn-danger btn-sm">
-                                            check </button> -->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                          
+                                        </td>
+                                        <td>
+                                           
+                                        </td>
+                                        <td>
+                                         
+                                        </td>
+                                        <td>
+                                           <strong>TOTAL: {{ total }}</strong> 
+                                        </td>
+                                        <td>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -155,8 +170,6 @@ import Datepicker from 'vuejs-datepicker'
             if(!User.loggedIn()){
                 this.$router.push({name: '/'})
             }
-            this.getPatientInformation();
-            this.editForm();
             this.getCompany();
             this.getAddedItems();
         },
@@ -165,18 +178,6 @@ import Datepicker from 'vuejs-datepicker'
         },
         data() {
             return {
-                /* form: {
-                    o2_stat: '',
-                    pulse_rate: '',
-                    rr: '',
-                    temp: '',
-                    bp: '',
-                    weight: '',
-                    height: '',
-                    chiefcomplaints: '',
-                    pspat: this.$route.params.id,
-                    user_id: User.user_id()
-                }, */
                 user_info:{
                     patientname: '',
                     contactno: '',
@@ -203,9 +204,17 @@ import Datepicker from 'vuejs-datepicker'
                 getId:0,
                 itemList:[],
                 itemList2:[],
+                grand_total:0 ,
             }
         },
-
+        computed: {
+            total() {
+                return this.itemList2.reduce((sum, item) => sum + item.total, 0);
+            },
+            checkform(){
+                return this.transactionDetail.dot!=''&&this.transactionDetail.invoiceno!=''&&this.transactionDetail.companyid!=''? true:false
+            }
+        },
         methods:{
             getCompany(){
                 axios.get('/api/getCompanies')
@@ -215,27 +224,23 @@ import Datepicker from 'vuejs-datepicker'
                 ))
                 .catch(console.log('error'))
             },
-            onFileSelected(event){
-                let file = event.target.files[0];
-                if(file.size > 1048770){
-                    Notification.image_Validation()
-                    console.log(1)
-                }else{
-                    let reader = new FileReader();
-                    reader.onload = event => {
-                        this.form.newphoto =  event.target.result
-                    };
-                    reader.readAsDataURL(file)
-                }
-
-            },
             addInitialdata(){
-                this.getSelectdeProduct.price = Number(this.productList.price);        
-                this.getSelectdeProduct.total = this.productList.price * this.productList.qty;          
-                this.getSelectdeProduct.qty = Number(this.productList.qty);  
-                this.$emit('update', this.getSelectdeProduct)  
-                this.itemList2  = this.$refs.productVal.results3
-                console.log(this.itemList2)
+                if(this.productList.product!=null&&this.productList.qty!=0){
+                    this.getSelectdeProduct.price = Number(this.productList.price);        
+                    this.getSelectdeProduct.total = this.productList.price * this.productList.qty;          
+                    this.getSelectdeProduct.qty = Number(this.productList.qty);  
+                    this.$emit('update', this.getSelectdeProduct)  
+                    this.itemList2  = this.$refs.productVal.results3
+                    this.productList.qty = 0;
+                    this.productList.price = 0;
+                    this.productList.total = 0;
+                    this.$refs.productVal.form.val = '';
+                }else{
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please check item'
+                    });
+                }
             },
             save(){
                 axios.post('/api/saveTransaction', {
@@ -255,56 +260,25 @@ import Datepicker from 'vuejs-datepicker'
                 })
                 .catch(error => console.log(error))
             },
-            getPatientInformation(){
-                axios.get('/api/getPxInfo/'+this.$route.params.id)
-                .then(({data}) => ( this.user_info = data))
-                .catch()
-            },
-            editForm(){                
-                let id = this.$route.params.id
-                axios.get('/api/getFormDetail/'+id)
-                    .then(({ data }) => (
-                    console.log("l "+data?data:0),
-                        this.form.o2_stat = !Object.keys(data).length === 0 ? this.form.o2_stat : data.o2_stat,  
-                        this.form.temp = !Object.keys(data).length === 0 ? this.form.temp : data.temp,             
-                        this.form.rr = !Object.keys(data).length === 0 ? this.form.rr : data.rr,             
-                        this.form.bp = !Object.keys(data).length === 0 ? this.form.bp : data.bp,             
-                        this.form.weight = !Object.keys(data).length === 0 ? this.form.weight : data.weight,             
-                        this.form.height = !Object.keys(data).length === 0 ? this.form.height : data.height,             
-                        this.form.chiefcomplaints = !Object.keys(data).length === 0 ? this.form.chiefcomplaints : data.chiefcomplaints                                 
-                ))
-                .catch(console.log('error'))
-            },
             clickedShowDetailModal: function (value) {
                 this.getSelectdeProduct = value;            
                 this.productList.product = this.getSelectdeProduct.product
                 this.productList.description = this.getSelectdeProduct.description
-                //this.productList.qty = this.getSelectdeProduct.qty
                 this.productList.price = this.getSelectdeProduct.price
-                //this.productList.price = this.getSelectdeProduct.price
-                //this.productList.total = this.productList.qty * this.getSelectdeProduct.price
                 this.productList.id = this.getSelectdeProduct.id
-               /*  this.getSelectdeProduct.price = this.productList.price;        
-                this.getSelectdeProduct.total = this.productList.price * this.productList.qty;          
-                this.getSelectdeProduct.qty = this.productList.qty;       */    
-
-                console.log(this.productList.qty)
-               // this.$emit('update', this.getSelectdeProduct)  
-
             },
             calculateTotal(){
                 this.productList.total = this.productList.price * this.productList.qty;
             },
             getAddedItems(){                
                 axios.get('/api/getTransaction/'+this.getId)
-                .then(({data}) => ( this.itemList = data))
+                .then(({data}) => ( 
+                    this.itemList = data
+                ))
                 .catch()
             },
             removeItem(e){
                 this.itemList2.splice(e, 1);
-            },
-            check(){
-                console.log(this.itemList2)
             },
         }
     }
