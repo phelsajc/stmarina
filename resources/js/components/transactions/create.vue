@@ -171,7 +171,16 @@ import Datepicker from 'vuejs-datepicker'
                 this.$router.push({name: '/'})
             }
             this.getCompany();
-            this.getAddedItems();
+            //this.getAddedItems();
+            
+            let checkId = this.$route.params.id
+            if(checkId!=0){
+                this.getId = checkId;
+                this.getAddedItems();
+                this.isDone = true;
+                this.editForm();
+                this.isNew = false;
+            }
         },
         components: {
             Datepicker
@@ -205,14 +214,25 @@ import Datepicker from 'vuejs-datepicker'
                 itemList:[],
                 itemList2:[],
                 grand_total:0 ,
+                isNew: true,
+                isDone: false,
+                newTotal: 0,
             }
         },
         computed: {
             total() {
-                return this.itemList2.reduce((sum, item) => sum + item.total, 0);
+                if(this.isNew){
+                    return this.itemList2.reduce((sum, item) => sum + item.total, 0);                    
+                }else{
+                    return this.newTotal
+                }
             },
             checkform(){
-                return this.transactionDetail.dot!=''&&this.transactionDetail.invoiceno!=''&&this.transactionDetail.companyid!=''? true:false
+                if(this.isNew){
+                    return this.transactionDetail.dot!=''&&this.transactionDetail.invoiceno!=''&&this.transactionDetail.companyid!=''? true:false               
+                }else{
+                    return false; 
+                }
             }
         },
         methods:{
@@ -243,22 +263,33 @@ import Datepicker from 'vuejs-datepicker'
                 }
             },
             save(){
-                axios.post('/api/saveTransaction', {
-                    items: this.$refs.productVal.results3,
-                    head: this.transactionDetail,                    
-                    user: User.user_id(),
-                })
-                .then(res => {
-                    console.log(res)
-                    this.getId  = res.data;
-                    this.getAddedItems();
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Saved successfully'
-                    });
-                    this.$refs.productVal.results3 = [];
-                })
-                .catch(error => console.log(error))
+                if(this.isNew){
+                    axios.post('/api/saveTransaction', {
+                        items: this.$refs.productVal.results3,
+                        head: this.transactionDetail,                    
+                        user: User.user_id(),
+                    })
+                    .then(res => {
+                        this.getId  = res.data;
+                        //this.getAddedItems();
+                        this.isNew = false
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Saved successfully'
+                        });
+                        this.$refs.productVal.results3 = [];
+                    })
+                    .catch(error => console.log(error))
+                }else{
+                    axios.post('/api/updateTransaction',{
+                        data: this.transactionDetail,
+                        id: this.getId
+                    })
+                    .then(res => {
+                        Notification.success()
+                    })
+                    .catch(error => this.errors = error.response.data.errors)
+                }
             },
             clickedShowDetailModal: function (value) {
                 this.getSelectdeProduct = value;            
@@ -273,12 +304,25 @@ import Datepicker from 'vuejs-datepicker'
             getAddedItems(){                
                 axios.get('/api/getTransaction/'+this.getId)
                 .then(({data}) => ( 
-                    this.itemList = data
+                    this.itemList2 = data,
+                    this.itemList2.forEach(e => {
+                      this.newTotal+=parseFloat(e.total)
+                    })
                 ))
                 .catch()
             },
             removeItem(e){
                 this.itemList2.splice(e, 1);
+            },
+            editForm(){
+                let id = this.$route.params.id
+                axios.get('/api/getTransactionHeader/'+id)
+                    .then(({ data }) => (
+                        this.transactionDetail.invoiceno = !Object.keys(data).length === 0 ? this.form.invoiceno : data.invoiceno,
+                        this.transactionDetail.dot = !Object.keys(data).length === 0 ? this.form.transactiondate : data.transactiondate,
+                        this.transactionDetail.companyid = !Object.keys(data).length === 0 ? this.form.companyid : data.companyid
+                ))
+                .catch(console.log('error'))
             },
         }
     }

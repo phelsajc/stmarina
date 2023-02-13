@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\Products;
+use App\Model\ReceivedProducts;
 use DB;
 
 class ProductController extends Controller
@@ -107,6 +108,12 @@ class ProductController extends Controller
             $arr['qty'] = $value->quantity;
             $data[] = $arr;
         }
+        return response()->json($data);
+    }
+
+    public function getProducts()
+    {
+        $data = Products::all();
         return response()->json($data);
     }
 }

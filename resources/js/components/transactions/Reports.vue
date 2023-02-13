@@ -22,8 +22,36 @@
             </section>
             <section class="content">
                 <div class="container-fluid">
+                    
+                    <form class="user" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group ">
+                                        <label>From</label>
+                                        <datepicker name="birthdate" :minimumView="'month'" :maximumView="'month'" v-model="filter.from" :bootstrap-styling=true></datepicker>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group ">
+                                        <label>To</label>
+                                        <datepicker name="birthdate" :minimumView="'month'" :maximumView="'month'" v-model="filter.to" :bootstrap-styling=true></datepicker>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>&nbsp;</label> <br>
+                                            <button type="button" @click="showReport()" class="btn btn-info">
+                                            Filter
+                                            </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                            
+                        </form>
                     <div id="chart">
-                        <apexchart type="line" height="350" :options="chartOptions" :series="series"></apexchart>
+                        <apexchart ref="radar"  type="line" height="350" :options="chartOptions" :series="series"></apexchart>
                     </div>
                 </div>
             </section>
@@ -58,104 +86,109 @@ import VueApexCharts from 'vue-apexcharts'
               data: [12, 11, 14, 18, 17, 13, 13]
             }
           ], */
-                series: [{
+         /*  series : [{
                     name: "Grace",
                     data: [10, 41, 35, 51, 49, 62, 69, 91, 33]
                 },{
                     name: "Mercury",
                     data: [14, 51, 45, 61, 59, 72, 79, 101, 31]
-                }],
+                }], */
+                filter:{
+                    from: '',
+                    to: '',
+                },
+                series : [],
                 chartOptions: {
                     chart: {
-                    height: 350,
-                    type: 'line',
-                    zoom: {
-                        enabled: false
-                    }
+                        height: 350,
+                        type: 'line',
+                        zoom: {
+                            enabled: false
+                        }
                     },
                     dataLabels: {
-                    enabled: true
+                        enabled: true
                     },
                     stroke: {
-                    curve: 'straight'
+                        curve: 'straight'
                     },
                     title: {
-                    text: 'Product Trends by Month',
-                    align: 'left'
+                        text: 'Graph Report',
+                        align: 'left'
                     },
                     grid: {
-                    row: {
-                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                        opacity: 0.5
-                    },
+                        row: {
+                            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                            opacity: 0.5
+                        },
                     },
                     xaxis: {
-                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                        categories: [],//['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
                     //categories: ['2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009'],
                     },
-            legend: {
-              position: 'top',
-              horizontalAlign: 'right',
-              floating: true,
-              offsetY: -25,
-              offsetX: -5
-            }
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'right',
+                        floating: true,
+                        offsetY: -25,
+                        offsetX: -5
+                    }
                     /* chart: {
-              height: 350,
-              type: 'line',
-              dropShadow: {
-                enabled: true,
-                color: '#000',
-                top: 18,
-                left: 7,
-                blur: 10,
-                opacity: 0.2
-              },
-              toolbar: {
-                show: false
-              }
-            },
-            colors: ['#77B6EA', '#545454'],
-            dataLabels: {
-              enabled: true,
-            },
-            stroke: {
-              curve: 'smooth'
-            },
-            title: {
-              text: 'Average High & Low Temperature',
-              align: 'left'
-            },
-            grid: {
-              borderColor: '#e7e7e7',
-              row: {
-                colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                opacity: 0.5
-              },
-            },
-            markers: {
-              size: 1
-            },
-            xaxis: {
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-              title: {
-                text: 'Month'
-              }
-            },
-            yaxis: {
-              title: {
-                text: 'Temperature'
-              },
-              min: 5,
-              max: 40
-            },
-            legend: {
-              position: 'top',
-              horizontalAlign: 'right',
-              floating: true,
-              offsetY: -25,
-              offsetX: -5
-            } */
+                        height: 350,
+                        type: 'line',
+                        dropShadow: {
+                            enabled: true,
+                            color: '#000',
+                            top: 18,
+                            left: 7,
+                            blur: 10,
+                            opacity: 0.2
+                        },
+                        toolbar: {
+                            show: false
+                        }
+                        },
+                        colors: ['#77B6EA', '#545454'],
+                        dataLabels: {
+                        enabled: true,
+                        },
+                        stroke: {
+                        curve: 'smooth'
+                        },
+                        title: {
+                        text: 'Average High & Low Temperature',
+                        align: 'left'
+                        },
+                        grid: {
+                        borderColor: '#e7e7e7',
+                        row: {
+                            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                            opacity: 0.5
+                        },
+                        },
+                        markers: {
+                        size: 1
+                        },
+                        xaxis: {
+                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                        title: {
+                            text: 'Month'
+                        }
+                        },
+                        yaxis: {
+                        title: {
+                            text: 'Temperature'
+                        },
+                        min: 5,
+                        max: 40
+                        },
+                        legend: {
+                        position: 'top',
+                        horizontalAlign: 'right',
+                        floating: true,
+                        offsetY: -25,
+                        offsetX: -5
+                        } */
                 },
             }
         },
@@ -247,10 +280,42 @@ import VueApexCharts from 'vue-apexcharts'
             calculateTotal(){
                 this.productList.total = this.productList.price * this.productList.qty;
             },
-            getAddedItems(){                
-                axios.get('/api/getTransaction/'+this.getId)
-                .then(({data}) => ( this.itemList = data))
-                .catch()
+            showReport(){                
+                /* axios.get('/api/report')
+                .then(({data}) => ( this.series = data))
+                .catch() */
+                axios.post('/api/report', {
+                    items:this.filter,
+                })
+                .then(res => {
+                    this.series = res.data[0].series
+                    //this.chartOptions.xaxis = 
+                    console.log(res.data[0])
+                    console.log(res.data[0].cat)
+                    this.chartOptions = {
+                        xaxis: {
+                            categories: res.data[0].cat
+                        }
+                    }
+                    console.log(this.chartOptions.xaxis.categories)
+                    /* this.chartOptions = {...this.chartOptions, ...{
+                        xaxis: {
+                            data: res.data[0].cat
+                        }
+                    }} */
+                    /* this.$refs.radar.updateOptions({
+                        xaxis: {
+                            categories: res.data[0].cat//ie ["a","b","c","d"]
+                        }
+                    }) */
+                    
+                    //this.$refs.radar.refresh();
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Saved successfully'
+                    });
+                })
+                .catch(error => console.log(error))
             },
         }
     }

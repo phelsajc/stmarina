@@ -31,6 +31,9 @@ let transaction = require('./components/transactions/create.vue').default
 let transaction_list = require('./components/transactions/index.vue').default
 //reports
 let reports = require('./components/transactions/Reports.vue').default
+//ReceivedProducts
+let rproduct_list = require('./components/rec_products/index.vue').default
+let rproduct_add = require('./components/rec_products/create.vue').default
 
 /*
     path, component & name should be the same inorder to work
@@ -64,11 +67,15 @@ export const routes = [
     { path: '/company_add', component: company_add, name: 'company_add' },
     
     //Transaction
-    { path: '/transaction', component: transaction, name: 'transaction' },
+    { path: '/transaction/:id', component: transaction, name: 'transaction' },
     { path: '/transaction_list', component: transaction_list, name: 'transaction_list' },
 
     //Reports
     { path: '/reports', component: reports, name: 'reports' },
+    
+    //Products
+    { path: '/rproduct_list', component: rproduct_list, name: 'rproduct_list' },
+    { path: '/rproduct_add', component: rproduct_add, name: 'rproduct_add' },
 ]
 
 

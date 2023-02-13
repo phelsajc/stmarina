@@ -61,6 +61,16 @@
                 <li class="nav-item">
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
+                    <router-link to="/rproduct_list" class="collapse-item"
+                      >Received</router-link
+                    >
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
                     <router-link to="/product_list" class="collapse-item"
                       >Products</router-link
                     >

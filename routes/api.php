@@ -60,6 +60,8 @@ Route::match(['get','post'],'products','ProductController@index');
 Route::match(['get','post'],'products-detail/{id}','ProductController@edit');
 Route::match(['get','post'],'products-delete/{id}','ProductController@delete');
 Route::match(['get','post'],'searchProduct','ProductController@searchProduct');
+Route::match(['get','post'],'getProducts','ProductController@getProducts');
+
 
 #Company
 Route::match(['get','post'],'company-add','CompanyController@store');
@@ -71,8 +73,19 @@ Route::match(['get','post'],'getCompanies','CompanyController@getCompanies');
 
 #Transaction
 Route::match(['get','post'],'saveTransaction','TransactionController@store');
+Route::match(['get','post'],'updateTransaction','TransactionController@update');
 Route::match(['get','post'],'getTransaction/{id}','TransactionController@getTransaction');
 Route::match(['get','post'],'transactions','TransactionController@index');
+Route::match(['get','post'],'getTransactionHeader/{id}','TransactionController@getTransactionHeader');
+Route::match(['get','post'],'report','TransactionController@report');
+
+#ReceivedProducts
+Route::match(['get','post'],'rec_products-add','ReceivedProductController@store');
+Route::match(['get','post'],'rec_products-update','ReceivedProductController@update');
+Route::match(['get','post'],'rec_products','ReceivedProductController@index');
+Route::match(['get','post'],'rec_products-detail/{id}','ReceivedProductController@edit');
+Route::match(['get','post'],'rec_products-delete/{id}','ReceivedProductController@delete');
+Route::match(['get','post'],'rec_searchProduct','ReceivedProductController@searchProduct');
 
 
 

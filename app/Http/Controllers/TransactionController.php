@@ -70,6 +70,8 @@ class TransactionController extends Controller
             $d->product_id = $val['id'];
             $d->product = $val['product'];
             $d->qty = $val['qty'];
+            $d->companyid = $request->head['companyid']; 
+            $d->transactiondate = $request->head['dot'];
             $d->total = $val['total'];
             $d->price = $val['price'];
             $getTotal += $val['total'];
@@ -82,10 +84,81 @@ class TransactionController extends Controller
         return response()->json($p->id);
     }
 
+    public function update(Request $request)
+    {
+        Transaction::where(['id'=>$request->id])->update([
+            'invoiceno'=> $request->data['invoiceno'],
+            'companyid'=> $request->data['companyid'],
+            'transactiondate'=> $request->data['dot'],
+            'updated_by'=> 1,
+            'updated_dt'=>  date('Y-m-d'),
+        ]);
+        return true;
+    }
+
     public function getTransaction($id)
     {
         $data = Transaction_details::where(['transaction_id'=>$id])->get();
         return response()->json($data);
+    }
+
+    public function getTransactionHeader($id)
+    {
+        $data = Transaction::where(['id'=>$id])->first();
+        return response()->json($data);
+    }
+
+    public function report(Request $request)
+    {
+        /* $data =  DB::connection('pgsql')->select("select to_char(tt.transactiondate,'Mon') as mon,extract(year from tt.transactiondate) as yyyy,tt.companyid,count(tt.companyid) as cnt
+        from transaction tt group by 1,2,tt.companyid;"); */
+        $sd = date_format(date_create($request->items['from']),'d F Y');
+        $td = date_format(date_create($request->items['to']),'d F Y');
+        $data =  DB::connection('pgsql')->select("select  tt.companyid,count(tt.companyid) as cnt
+        from transaction tt
+         where tt.transactiondate between '$sd' and '$td' group by tt.companyid;");
+       
+        $start    = new \DateTime($request->items['from']);
+        $start->modify('first day of this month');
+        $end      = new \DateTime($request->items['to']);
+        $end->modify('first day of next month');
+        $interval = \DateInterval::createFromDateString('1 month');
+        $period   = new \DatePeriod($start, $interval, $end);
+        //echo iterator_count($period);
+
+        $data_array = array();
+        $cat_array = array();
+        foreach ($data as $key => $value) {
+            $arr = array();
+            $arr_data = array();
+            $company_data = Company::where(['id'=>$value->companyid])->first(); 
+            /* $tdata = DB::connection('pgsql')->select("SELECT *
+            FROM transaction_details td where transactiondate between '01 Feb 2023' and '28 Mar 2023' and companyid = $value->companyid"); */
+            
+
+            foreach ($period as $dt) {
+                //echo $dt->format("Y-m") . "<br>\n";
+                $cat_array[] = $dt->format("M");
+                $last_day = date('t F Y', strtotime($dt->format("Y-m-d")));
+                $start_day = $dt->format("d F Y");
+                $tdata = DB::connection('pgsql')->select("select  to_char(tt.transactiondate,'Mon') as mon,extract(year from tt.transactiondate) as yyyy,tt.companyid,count(tt.companyid) as cnt,sum(tt.total) as total
+                from transaction_details tt
+                where tt.transactiondate between '$start_day' and '$last_day' and companyid = $value->companyid
+                group by 1,2,tt.companyid;");
+                $totals = 0;
+                foreach ($tdata as $key2 => $value2) {
+                    $totals += $value2->total;
+                }
+                $arr_data[] = $totals;
+            }
+
+
+            $arr['name'] =  $company_data->company;
+            $arr['data'] =  $arr_data ;
+            $data_array[] = $arr;
+        }
+        $datasets = array(["series"=>$data_array,'cat'=>array_unique($cat_array)]);
+        return response()->json( $datasets);
     }
    
 }
