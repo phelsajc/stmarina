@@ -61,6 +61,7 @@ Route::match(['get','post'],'products-detail/{id}','ProductController@edit');
 Route::match(['get','post'],'products-delete/{id}','ProductController@delete');
 Route::match(['get','post'],'searchProduct','ProductController@searchProduct');
 Route::match(['get','post'],'getProducts','ProductController@getProducts');
+Route::match(['get','post'],'stockInventory','ProductController@stockInventory');
 
 
 #Company
@@ -86,6 +87,8 @@ Route::match(['get','post'],'rec_products','ReceivedProductController@index');
 Route::match(['get','post'],'rec_products-detail/{id}','ReceivedProductController@edit');
 Route::match(['get','post'],'rec_products-delete/{id}','ReceivedProductController@delete');
 Route::match(['get','post'],'rec_searchProduct','ReceivedProductController@searchProduct');
+
+
 
 
 

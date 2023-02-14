@@ -66,9 +66,9 @@
                                     <div class="form-group">
                                         <label>UOM</label>
                                         <select  class="form-control" v-model="form.uom">
-                                            <option value="Staff">PCS</option>
-                                            <option value="Doctor">KG</option>
-                                            <option value="Administrator">LT</option>
+                                            <option value="PCS">PCS</option>
+                                            <option value="KG">KG</option>
+                                            <option value="LT">LT</option>
                                         </select>
                                         <small class="text-danger" v-if="errors.uom">{{ errors.uom[0] }}</small>
                                     </div>
@@ -124,8 +124,12 @@ import Datepicker from 'vuejs-datepicker'
             if(!User.loggedIn()){
                 this.$router.push({name: '/'})
             }
-            this.getPatientInformation();
-            this.editForm();
+            let checkId = this.$route.params.id
+            if(checkId!=0){
+                this.getId = checkId;
+                this.editForm();
+                this.isNew = false;
+            }
         },
         components: {
             Datepicker
@@ -139,72 +143,59 @@ import Datepicker from 'vuejs-datepicker'
                     uom: '',
                     dop:'',
                     code:'',
+                    price:'',
                 },
                 user_info:{
                     patientname: '',
                     contactno: '',
                     pk_pspatregisters: '',
                 },
+                getId: 0,
+                isNew: true,
                 errors:{}
             }
         },
 
         methods:{
             addProduct(){
-                axios.post('/api/products-add',this.form)
-                .then(res => {
-                    this.$router.push({name: 'product_list'});
-                    Notification.success()
-                })
-                .catch(error => this.errors = error.response.data.errors)
-            },
-            onFileSelected(event){
-                let file = event.target.files[0];
-                if(file.size > 1048770){
-                    Notification.image_Validation()
-                    console.log(1)
-                }else{
-                    let reader = new FileReader();
-                    reader.onload = event => {
-                        this.form.newphoto =  event.target.result
-                    };
-                    reader.readAsDataURL(file)
-                }
-
-            },
-            addInitialdata(){
-                axios.post('/api/saveInitialData',this.form)
-                .then(res => {
-                    Notification.success()
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Saved successfully'
+                if(this.isNew){
+                    axios.post('/api/products-add',this.form)
+                    .then(res => {
+                        this.$router.push({name: 'product_list'});
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Saved successfully'
+                        });
                     })
-                    this.$router.push({name: 'all_employee'});
-                })
-                .catch(error => this.errors = error.response.data.errors)
-            },
-            getPatientInformation(){
-                axios.get('/api/getPxInfo/'+this.$route.params.id)
-                .then(({data}) => ( this.user_info = data))
-                .catch()
-            },
+                    .catch(error => this.errors = error.response.data.errors)
+                }else{
+                    axios.post('/api/products-update',{
+                        data: this.form,
+                        id: this.getId
+                    })
+                    .then(res => {
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Saved successfully'
+                        });
+                    })
+                    .catch(error => this.errors = error.response.data.errors)
+                }
+            },      
             editForm(){                
                 let id = this.$route.params.id
-                axios.get('/api/getFormDetail/'+id)
+                axios.get('/api/products-detail/'+id)
                     .then(({ data }) => (
-                    console.log("l "+data?data:0),
-                        this.form.o2_stat = !Object.keys(data).length === 0 ? this.form.o2_stat : data.o2_stat,  
-                        this.form.temp = !Object.keys(data).length === 0 ? this.form.temp : data.temp,             
-                        this.form.rr = !Object.keys(data).length === 0 ? this.form.rr : data.rr,             
-                        this.form.bp = !Object.keys(data).length === 0 ? this.form.bp : data.bp,             
-                        this.form.weight = !Object.keys(data).length === 0 ? this.form.weight : data.weight,             
-                        this.form.height = !Object.keys(data).length === 0 ? this.form.height : data.height,             
-                        this.form.chiefcomplaints = !Object.keys(data).length === 0 ? this.form.chiefcomplaints : data.chiefcomplaints                                 
+                        this.form.name = data.product,  
+                        this.form.desc =  data.description,             
+                        this.form.qty =  data.quantity,             
+                        this.form.uom =  data.uom,             
+                        this.form.dop =  data.dop,             
+                        this.form.code =  data.code,             
+                        this.form.price =  data.price                                              
                 ))
-                .catch(console.log('error'))
-            }
-            
+                .catch(error => this.errors = console.log(error.response.data.errors))
+            }            
         }
     }
     

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\Products;
 use App\Model\ReceivedProducts;
+use App\Model\Transaction_details;
 use DB;
 
 class ProductController extends Controller
@@ -30,6 +31,7 @@ class ProductController extends Controller
 
         foreach ($data as $key => $value) {
             $arr = array();
+            $arr['id'] =  $value->id;
             $arr['name'] =  $value->product;
             $arr['desc'] =  $value->description;
             $arr['qty'] =  $value->quantity;
@@ -76,17 +78,17 @@ class ProductController extends Controller
     public function update(Request $request)
     {
         Products::where(['id'=>$request->id])->update([
-            'product'=> $request->historyPe,
-            'description'=> $request->diagnosis,
-            'quantity'=> $request->pe,
-            'uom'=>  $request->name,
-            'dop'=> $request->historyPe,
-            'code'=> $request->diagnosis,
-            'updated_by'=> $request->pe,
-            'updated_dt'=>  $request->name,
-            'price'=>  $request->price,
+            'product'=> $request->data['name'],
+            'description'=> $request->data['desc'],
+            'quantity'=> $request->data['qty'],
+            'uom'=>  $request->data['uom'],
+            'dop'=> $request->data['dop'],
+            'code'=> $request->data['code'],
+            'updated_by'=> 1,
+            'updated_dt'=>   date("Y-m-d H:i"),
+            'price'=>  $request->data['price'],
         ]);
-        return true;
+        return response()->json(true);
     }
 
     public function Delete($id)
@@ -114,6 +116,34 @@ class ProductController extends Controller
     public function getProducts()
     {
         $data = Products::all();
+        return response()->json($data);
+    }
+
+    public function stockInventory(){
+        $query = DB::connection('pgsql')->select("select * from products");
+        $data = array();
+        foreach ($query as $key => $value ) {
+            $rec_prod = ReceivedProducts::where('pid',$value->id)->get();
+            $sales = Transaction_details::where('product_id',$value->id)->get();
+            $total_received = 0;
+            $total_sales = 0;
+            foreach ($rec_prod as $key => $rvalue) {
+                $total_received += $rvalue->quantity;
+            }
+            foreach ($sales as $key => $svalue) {
+                $total_sales += $svalue->total;
+            }
+            $arr = array();
+            $arr['codes'] = $value->code;
+            $arr['products'] = $value->product;
+            $arr['units'] = $value->uom;
+            $arr['rec'] =  $total_received;
+            $arr['sales'] = $total_sales;
+            $arr['stock'] = $total_received-$total_sales;
+            $arr['price'] = $value->price;
+            $arr['total'] = 0;
+            $data[] = $arr;
+        }
         return response()->json($data);
     }
 }

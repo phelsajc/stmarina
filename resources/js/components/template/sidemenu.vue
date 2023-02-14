@@ -116,6 +116,15 @@
                 >
               </a>
             </li>
+            
+            <li class="nav-item">
+              <a href="#" class="nav-link" id="usermenu">
+                <i class="far fa-circle nav-icon"></i>
+                <router-link to="/stocks" class="collapse-item"
+                  >Stocks</router-link
+                >
+              </a>
+            </li>
   
             <li class="nav-item">
               <router-link to="/logout" class="nav-link">

@@ -35,6 +35,9 @@ let reports = require('./components/transactions/Reports.vue').default
 let rproduct_list = require('./components/rec_products/index.vue').default
 let rproduct_add = require('./components/rec_products/create.vue').default
 
+
+let stocks = require('./components/stocks/index.vue').default
+
 /*
     path, component & name should be the same inorder to work
 */
@@ -60,7 +63,7 @@ export const routes = [
     
     //Products
     { path: '/product_list', component: product_list, name: 'product_list' },
-    { path: '/product_add', component: product_add, name: 'product_add' },
+    { path: '/product_add/:id', component: product_add, name: 'product_add' },
 
     //Company
     { path: '/company_list', component: company_list, name: 'company_list' },
@@ -75,7 +78,9 @@ export const routes = [
     
     //Products
     { path: '/rproduct_list', component: rproduct_list, name: 'rproduct_list' },
-    { path: '/rproduct_add', component: rproduct_add, name: 'rproduct_add' },
+    { path: '/rproduct_add/:id', component: rproduct_add, name: 'rproduct_add' },
+    
+    { path: '/stocks', component: stocks, name: 'stocks' },
 ]
 
 

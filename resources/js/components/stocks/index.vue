@@ -7,7 +7,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Received Product Lists</h1>
+              <h1>Stocks Inventory</h1>
             </div>
           </div>
         </div>
@@ -23,60 +23,55 @@
               <div class="card">
                 <div class="card-header">
                   <h3 class="card-title">&nbsp;</h3>
-                  <router-link to="/rproduct_add/0" class="btn btn-primary"
-                    >Add</router-link
-                  >
+                 
                 </div>
 
                 <div class="card-body">
-                  <div class="spin_center" :class="{'d-none': isHidden }">
-                    <div class="overlay">
-                      <i class="fas fa-3x fa-sync-alt fa-spin"></i>
-                      <div class="text-bold pt-2">Loading...</div>
-                    </div>
-                  </div>
 
-                  <ul class="list-group">
-                    <input
-                      type="text"
-                      v-model="form.searchTerm2"
-                      @change="filterEmployee()"
-                      class="form-control to-right"
-                      style="width: 100%"
-                      placeholder="Search user here"
-                    />
-                    <router-link v-for="e in filtersearch" :key="e.id" :to="{name: 'rproduct_add',params:{id:e.id}}">   
-                      <li class="list-group-item">
-                        <div class="row">
-                          <div class="col-6 float-left">
-                            <div class="d-flex w-100 justify-content-between">
-                              <h5 class="mb-1">
-                                <strong>{{e.name}} </strong>
-                              </h5>
-                            </div>
-                            <span class="badge badge-secondary"> {{e.desc}} </span>
-                            <span class="badge badge-success">Quantity: {{ e.qty }}</span>
-                          </div>
-                        </div>
-                      </li>
-                    </router-link>
-                  </ul>
-                  <br />
-                  <nav aria-label="Page navigation example" class="to-right">
-                    <ul class="pagination">
-                      <li
-                        class="page-item"
-                        v-for="(e, index) in this.countRecords"
-                      >
-                        <a
-                          class="page-link"
-                          @click="getPageNo(index+1)"
-                          href="#"
-                          >{{index+1}}</a
-                        >
-                      </li>
-                    </ul>
-                  </nav>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Codes</th>
+                        <th>Products</th>
+                        <th>Units</th>
+                        <th>Received</th>
+                        <th>Sales</th>
+                        <th>Stock</th>
+                        <th>Price</th>
+                        <!-- <th></th> -->
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="e in items">
+                        <td>
+                          {{ e.codes }}
+                        </td>
+                        <td>
+                          {{ e.products }}
+                        </td>
+                        <td>
+                          {{ e.units }}
+                        </td>
+                        <td>
+                         <strong> {{ e.rec }}</strong>
+                        </td>
+                        <td>
+                          <strong>  {{ e.sales }}</strong>
+                        </td>
+                        <td>
+                          <strong> {{ e.stock }}</strong>
+                        </td>
+                        <td>
+                          {{ e.price }}
+                        </td>
+                        <!-- <td>
+                          {{ e.total }}
+                        </td> -->
+                      </tr>
+                    </tbody>
+                  </table>
+                  
+             
 
                   <nav aria-label="Page navigation example" class="">
                     {{showing}}
@@ -106,25 +101,13 @@ created() {
           if(!User.loggedIn()){
               this.$router.push({name: '/'})
           }
-          this.allEmployee();
-          this.me();
+
+          this.stockInventory()
       },
       data(){
 
           return {
-              hasError: false,
-              isHidden: true,
-              form: {
-                searchTerm2: null,
-                start: 0
-              },
-              employees:[],
-              searchTerm:'',
-              countRecords: 0,
-              getdctr: '-',
-              utype: User.user_type(),
-              token: localStorage.getItem('token'),
-              showing: '',
+              items:[]
           }
       },
       computed:{
@@ -136,20 +119,19 @@ created() {
 
       },
       methods: {
-          allEmployee(){
+          stockInventory(){
             this.isHidden =  false
-              axios.get('/api/rec_products')
+              //axios.get('/api/employee')
+              axios.get('/api/stockInventory')
               .then(({data}) => (
-                this.employees = data[0].data ,
-                this.countRecords =data[0].count,
-                this.showing = data[0].showing,
-            this.isHidden =  true
+                this.items = data
              ))
               .catch()
           },
           me(){
               axios.post('/api/auth/me','',{
                   headers: {
+                    //"Content-Type": "application/x-www-form-urlencoded",
                     Authorization: "Bearer ".concat(this.token),
                     Accept: "application/jsons",
                   }
@@ -160,6 +142,14 @@ created() {
             .catch(error => this.errors = error.response.data.errors)
 
           },
+          pdf(){
+              /* axios.get('/pdf')
+              .then(({data}) => (
+                  console.log(data)
+              ))
+              .catch() */
+              window.open("/api/pdf", '_blank');
+          },
         async  check_doctors_detail(id) {
           return await axios.get( '/api/check_doctors_detail/'+id)
             .then(response => {
@@ -168,7 +158,13 @@ created() {
               }, 3000);
 
             })
+           /*  .then((response) => {
+              return  Promise.resolve(response.data); }) */
+
           },
+        /* async  check_doctors_detail(id) {
+           return await axios.get( '/api/check_doctors_detail/'+id)
+          }, */
           formatDate(date) {
               const options = { year: 'numeric', month: 'long', day: 'numeric' }
               return new Date(date).toLocaleDateString('en', options)
@@ -191,8 +187,10 @@ created() {
                           })
                       })
                       .catch(() =>{
+                          //this.$router.push({name: 'all_employee'})
                           this.$router.push("/all_employee").catch(()=>{});
                       })
+
                       Swal.fire(
                       'Deleted!',
                       'Your file has been deleted.',
@@ -206,7 +204,9 @@ created() {
               this.countRecords = null
             this.form.start = 0
             this.isHidden =  false
+              //axios.post('/api/filterEmployee',this.form)
               axios.post('/api/products',this.form)
+
               .then(res => {
                 this.employees = res.data[0].data
                 this.countRecords =res.data[0].count
@@ -218,6 +218,11 @@ created() {
           getPageNo(id){
             this.form.start = (id-1) * 10
             this.isHidden =  false
+            //alert(a)
+            /* this.employees = []
+            this.countRecords = null */
+            //axios.post('/api/filterEmployee',this.form)
+            console.log(this.isHidden)
             axios.post('/api/products',this.form)
               .then(res => {
                 this.employees = res.data[0].data
@@ -225,10 +230,18 @@ created() {
                 this.showing = res.data[0].showing,
                 console.log(res.data[0])
                 this.isHidden =  true
+            console.log(this.isHidden)
             })
             .catch(error => this.errors = error.response.data.errors)
           },
       },
+      /* mounted () {
+        axios.get('/api/check_doctors_detail/'+id)
+            .then(response => (this.getdctr = response))
+      }, */
+      /* created(){
+          this.allEmployee();
+      } */
   }
 </script>
 

@@ -59,14 +59,6 @@
 
                           <span class="badge badge-secondary"> {{e.invno}}</span>
                         </div>
-                        <!-- <div class="col-md-6 float-right">
-                          <button class="btn btn-success float-right">
-                            UPDATE
-                          </button>
-                          <button class="btn btn-danger float-right">
-                            DELETE
-                          </button>
-                        </div> -->
                       </div>
                     </li>
                     </router-link>

@@ -29,13 +29,16 @@ class ReceivedProductController extends Controller
         $data_array = array();
 
         foreach ($data as $key => $value) {
+            $product = Products::where(['id'=>$value->pid])->first();
             $arr = array();
+            $arr['id'] =  $value->id;
+            $arr['pid'] =  $value->pid;
             $arr['name'] =  $value->product;
-            $arr['desc'] =  $value->description;
+            $arr['desc'] =  $product['description'];
             $arr['qty'] =  $value->quantity;
-            $arr['uom'] =  $value->uom;
-            $arr['dop'] =  $value->dop;  
-            $arr['price'] =  $value->price;  
+            $arr['uom'] =  $product;
+            $arr['dor'] =  $value->date_receive;  
+            $arr['price'] =  $product['price'];  
             $data_array[] = $arr;
         }
         $page = sizeof($count)/$length;
@@ -73,13 +76,16 @@ class ReceivedProductController extends Controller
     
     public function update(Request $request)
     {
+        $product = Products::where(['id'=>$request->data['pid']])->first();
         ReceivedProducts::where(['id'=>$request->id])->update([
-            'product'=> $request->historyPe,
-            'quantity'=> $request->pe,
-            'date_receive'=> $request->historyPe,
-            'updated_by'=> $request->pe,
-            'updated_dt'=>  $request->name,
+            'product'=> $product->product,
+            'pid'=> $request->data['pid'],
+            'quantity'=> $request->data['qty'],
+            'date_receive'=> $request->data['dor'],
+            'updated_by'=> 1,
+            'updated_dt'=>   date("Y-m-d H:i"),
         ]);
+        return response()->json(true);
         return true;
     }
 
