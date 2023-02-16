@@ -63,7 +63,7 @@
 
                             
                             <div class="row">
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label>Item</label>
                                         <products :meds="productList.product" ref="productVal" @handle-form-data="clickedShowDetailModal"></products>
@@ -78,8 +78,15 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="form-group">
+                                        <label>Stocks</label>
+                                        <input type="text" class="form-control" id="" placeholder="Enter Quantity" readonly v-model="stocks">
+                                        <small class="text-danger" v-if="errors.desc">{{ errors.desc[0] }}</small>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
                                         <label>Quantity</label>
-                                        <input type="text" class="form-control" id="" placeholder="Enter Quantity" @change="calculateTotal" v-model="productList.qty">
+                                        <input type="number" class="form-control" id="" placeholder="Enter Quantity" @change="calculateTotal" v-model="productList.qty">
                                         <small class="text-danger" v-if="errors.desc">{{ errors.desc[0] }}</small>
                                     </div>
                                 </div>
@@ -130,7 +137,7 @@
                                             {{ e.total }}
                                         </td>
                                         <td>
-                                           <button type="button" @click="removeItem(index)" class="btn btn-danger btn-sm">
+                                           <button type="button" @click="removeItem(index)" class="btn btn-danger btn-sm" :class="[(checkform?'':'d-none')]">
                                             Remove </button>
                                         </td>
                                     </tr>
@@ -217,15 +224,17 @@ import Datepicker from 'vuejs-datepicker'
                 isNew: true,
                 isDone: false,
                 newTotal: 0,
+                stocks: 0
             }
         },
         computed: {
             total() {
-                if(this.isNew){
+                    return this.itemList2.reduce((sum, item) => sum + item.total, 0);     
+                /* if(this.isNew){
                     return this.itemList2.reduce((sum, item) => sum + item.total, 0);                    
                 }else{
                     return this.newTotal
-                }
+                } */
             },
             checkform(){
                 if(this.isNew){
@@ -245,7 +254,7 @@ import Datepicker from 'vuejs-datepicker'
                 .catch(console.log('error'))
             },
             addInitialdata(){
-                if(this.productList.product!=null&&this.productList.qty!=0){
+                if(this.productList.product!=null&&this.productList.qty!=0&&this.productList.qty<=this.stocks){
                     this.getSelectdeProduct.price = Number(this.productList.price);        
                     this.getSelectdeProduct.total = this.productList.price * this.productList.qty;          
                     this.getSelectdeProduct.qty = Number(this.productList.qty);  
@@ -271,7 +280,6 @@ import Datepicker from 'vuejs-datepicker'
                     })
                     .then(res => {
                         this.getId  = res.data;
-                        //this.getAddedItems();
                         this.isNew = false
                         Toast.fire({
                             icon: 'success',
@@ -297,9 +305,13 @@ import Datepicker from 'vuejs-datepicker'
                 this.productList.description = this.getSelectdeProduct.description
                 this.productList.price = this.getSelectdeProduct.price
                 this.productList.id = this.getSelectdeProduct.id
+                this.stocks = this.getSelectdeProduct.qty
+                console.log( this.getSelectdeProduct.qty)
             },
             calculateTotal(){
-                this.productList.total = this.productList.price * this.productList.qty;
+                if(this.productList.qty<=this.stocks){
+                    this.productList.total = this.productList.price * this.productList.qty;
+                }
             },
             getAddedItems(){                
                 axios.get('/api/getTransaction/'+this.getId)

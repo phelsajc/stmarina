@@ -48,7 +48,7 @@
                 this.results2.product = id.product;
                 this.results2.description = id.description;
                 this.results2.price = id.price;
-                //this.results2.qty = id.qty;
+                this.results2.qty = id.qty
                 this.results2.code = id.code;
                 this.form.val = id.product;
                 this.results = []
@@ -74,7 +74,7 @@
             },
             clearForm() {
                 this.form.val = ''
-            }         
+            }   
         },     
         created() {
             this.$parent.$on('update', this.setValue);

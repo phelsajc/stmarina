@@ -129,8 +129,11 @@ import AppStorage from '../../Helpers/AppStorage';
             addEmployee(){
                 axios.post('/api/company-add',this.form)
                 .then(res => {
-                    this.$router.push({name: 'userslist'});
-                    Notification.success()
+                    this.$router.push({name: 'company_list'});
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Saved successfully'
+                    })
                 })
                 .catch(error => this.errors = error.response.data.errors)
             },

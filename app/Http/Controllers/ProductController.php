@@ -58,9 +58,9 @@ class ProductController extends Controller
         $p = new Products;
         $p->product = $request->name;
         $p->description = $request->desc;
-        $p->quantity = $request->qty;
+        //$p->quantity = $request->qty;
         $p->uom = $request->uom;
-        $p->dop = $request->dop;
+        //$p->dop = $request->dop;
         $p->code = $request->code;
         $p->price = $request->price;
         $p->created_dt = date("Y-m-d H:i");
@@ -80,9 +80,9 @@ class ProductController extends Controller
         Products::where(['id'=>$request->id])->update([
             'product'=> $request->data['name'],
             'description'=> $request->data['desc'],
-            'quantity'=> $request->data['qty'],
+            //'quantity'=> $request->data['qty'],
             'uom'=>  $request->data['uom'],
-            'dop'=> $request->data['dop'],
+            //'dop'=> $request->data['dop'],
             'code'=> $request->data['code'],
             'updated_by'=> 1,
             'updated_dt'=>   date("Y-m-d H:i"),
@@ -107,7 +107,12 @@ class ProductController extends Controller
             $arr['description'] = $value->description;
             $arr['price'] =  $value->price;
             $arr['code'] = $value->code;
-            $arr['qty'] = $value->quantity;
+            $total_received = 0;
+            $rec_prod = ReceivedProducts::where('pid',$value->id)->get();
+            foreach ($rec_prod as $key => $rvalue) {
+                $total_received += $rvalue->quantity;
+            }
+            $arr['qty'] = $total_received;
             $data[] = $arr;
         }
         return response()->json($data);

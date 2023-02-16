@@ -55,14 +55,14 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-6">
+                                <!-- <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Quantity</label>
                                         <input type="text" class="form-control" id="" placeholder="Enter Product Quantity" v-model="form.qty">
                                         <small class="text-danger" v-if="errors.qty">{{ errors.qty[0] }}</small>
                                     </div>
-                                </div>
-                                <div class="col-sm-6">
+                                </div> -->
+                                <!-- <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>UOM</label>
                                         <select  class="form-control" v-model="form.uom">
@@ -72,14 +72,25 @@
                                         </select>
                                         <small class="text-danger" v-if="errors.uom">{{ errors.uom[0] }}</small>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="row">
-                                <div class="col-sm-4">
+                                <!-- <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>Date Purchase</label>
                                         <datepicker name="dop" v-model="form.dop" :bootstrap-styling=true></datepicker>
                                         <small class="text-danger" v-if="errors.dop">{{ errors.dop[0] }}</small>
+                                    </div>
+                                </div> -->
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>UOM</label>
+                                        <select  class="form-control" v-model="form.uom">
+                                            <option value="PFS">PFS</option>
+                                            <option value="BXS">BXS</option>
+                                            <option value="BOT">BOT</option>
+                                        </select>
+                                        <small class="text-danger" v-if="errors.uom">{{ errors.uom[0] }}</small>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
@@ -139,9 +150,9 @@ import Datepicker from 'vuejs-datepicker'
                 form: {
                     name: '',
                     desc: '',
-                    qty: '',
+                    //qty: '',
                     uom: '',
-                    dop:'',
+                    //dop:'',
                     code:'',
                     price:'',
                 },
@@ -188,9 +199,9 @@ import Datepicker from 'vuejs-datepicker'
                     .then(({ data }) => (
                         this.form.name = data.product,  
                         this.form.desc =  data.description,             
-                        this.form.qty =  data.quantity,             
+                        //this.form.qty =  data.quantity,             
                         this.form.uom =  data.uom,             
-                        this.form.dop =  data.dop,             
+                        //this.form.dop =  data.dop,             
                         this.form.code =  data.code,             
                         this.form.price =  data.price                                              
                 ))
