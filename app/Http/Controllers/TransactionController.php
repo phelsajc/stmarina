@@ -161,4 +161,28 @@ class TransactionController extends Controller
         return response()->json( $datasets);
     }
    
+
+    
+    public function DailyReport(Request $request){
+        $date = date_format(date_create($request->items['date']),'d M Y');
+        $query = DB::connection('pgsql')->select("select * from transaction where transactiondate = '$date'");
+        $data = array();
+        $grandTotal = 0;
+        foreach ($query as $key => $value ) {
+            $sales = Transaction_details::where('transaction_id',$value->id)->get();
+            $Company = Company::where('id',$value->companyid)->first();
+            $total_sales = 0;
+            foreach ($sales as $key => $svalue) {
+                $total_sales += $svalue->total;
+            }
+            $arr = array();
+            $arr['company'] = $Company->company;
+            $arr['inv'] = $value->invoiceno;
+            $arr['sales'] = $total_sales;
+            $grandTotal +=$total_sales;  
+            $data[] = $arr;
+        }
+        $datasets = array(["data"=>$data,"count"=>$grandTotal,]);
+        return response()->json($datasets);
+    }
 }

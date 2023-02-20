@@ -108,11 +108,16 @@ class ProductController extends Controller
             $arr['price'] =  $value->price;
             $arr['code'] = $value->code;
             $total_received = 0;
+            $total_sales = 0;
             $rec_prod = ReceivedProducts::where('pid',$value->id)->get();
+            $sales = Transaction_details::where('product_id',$value->id)->get();
             foreach ($rec_prod as $key => $rvalue) {
                 $total_received += $rvalue->quantity;
             }
-            $arr['qty'] = $total_received;
+            foreach ($sales as $key => $svalue) {
+                $total_sales += $svalue->total;
+            }
+            $arr['qty'] = $total_received-$total_sales;
             $data[] = $arr;
         }
         return response()->json($data);

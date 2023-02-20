@@ -63,7 +63,6 @@ Route::match(['get','post'],'searchProduct','ProductController@searchProduct');
 Route::match(['get','post'],'getProducts','ProductController@getProducts');
 Route::match(['get','post'],'stockInventory','ProductController@stockInventory');
 
-
 #Company
 Route::match(['get','post'],'company-add','CompanyController@store');
 Route::match(['get','post'],'company-update','CompanyController@update');
@@ -79,6 +78,8 @@ Route::match(['get','post'],'getTransaction/{id}','TransactionController@getTran
 Route::match(['get','post'],'transactions','TransactionController@index');
 Route::match(['get','post'],'getTransactionHeader/{id}','TransactionController@getTransactionHeader');
 Route::match(['get','post'],'report','TransactionController@report');
+Route::match(['get','post'],'DailyReport','TransactionController@DailyReport');
+
 
 #ReceivedProducts
 Route::match(['get','post'],'rec_products-add','ReceivedProductController@store');
@@ -88,6 +89,13 @@ Route::match(['get','post'],'rec_products-detail/{id}','ReceivedProductControlle
 Route::match(['get','post'],'rec_products-delete/{id}','ReceivedProductController@delete');
 Route::match(['get','post'],'rec_searchProduct','ReceivedProductController@searchProduct');
 
+#COllections
+Route::match(['get','post'],'collection-add','CollectionController@store');
+Route::match(['get','post'],'collection-update','CollectionController@update');
+Route::match(['get','post'],'collection','CollectionController@index');
+Route::match(['get','post'],'collection-detail/{id}','CollectionController@edit');
+Route::match(['get','post'],'collection-delete/{id}','CollectionController@delete');
+Route::match(['get','post'],'collection-report','CollectionController@reports');
 
 
 

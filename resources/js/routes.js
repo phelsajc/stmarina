@@ -23,12 +23,17 @@ let usersadd = require('./components/users/create.vue').default
 //Products
 let product_list = require('./components/products/index.vue').default
 let product_add = require('./components/products/create.vue').default
-//Products
+//Company
 let company_list = require('./components/company/index.vue').default
 let company_add = require('./components/company/create.vue').default
+//Collections
+let collection_list = require('./components/collections/index.vue').default
+let collection_add = require('./components/collections/create.vue').default
+let collection_reports = require('./components/collections/Reports.vue').default
 //Transaction
 let transaction = require('./components/transactions/create.vue').default
 let transaction_list = require('./components/transactions/index.vue').default
+let transaction_report = require('./components/transactions/DailyReports.vue').default
 //reports
 let reports = require('./components/transactions/Reports.vue').default
 //ReceivedProducts
@@ -72,6 +77,7 @@ export const routes = [
     //Transaction
     { path: '/transaction/:id', component: transaction, name: 'transaction' },
     { path: '/transaction_list', component: transaction_list, name: 'transaction_list' },
+    { path: '/transaction_report', component: transaction_report, name: 'transaction_report' },
 
     //Reports
     { path: '/reports', component: reports, name: 'reports' },
@@ -81,6 +87,11 @@ export const routes = [
     { path: '/rproduct_add/:id', component: rproduct_add, name: 'rproduct_add' },
     
     { path: '/stocks', component: stocks, name: 'stocks' },
+
+    //Collections
+    { path: '/collection_list', component: collection_list, name: 'collection_list' },
+    { path: '/collection_add/:id', component: collection_add, name: 'collection_add' },
+    { path: '/collection_reports', component: collection_reports, name: 'collection_reports' },
 ]
 
 

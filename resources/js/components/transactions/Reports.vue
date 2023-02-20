@@ -28,13 +28,13 @@
                                 <div class="col-sm-3">
                                     <div class="form-group ">
                                         <label>From</label>
-                                        <datepicker name="birthdate" :minimumView="'month'" :maximumView="'month'" v-model="filter.from" :bootstrap-styling=true></datepicker>
+                                        <datepicker name="birthdate" input-class ="dpicker" :minimumView="'month'" :maximumView="'month'" v-model="filter.from" :bootstrap-styling=true></datepicker>
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group ">
                                         <label>To</label>
-                                        <datepicker name="birthdate" :minimumView="'month'" :maximumView="'month'" v-model="filter.to" :bootstrap-styling=true></datepicker>
+                                        <datepicker name="birthdate" input-class ="dpicker" :minimumView="'month'" :maximumView="'month'" v-model="filter.to" :bootstrap-styling=true></datepicker>
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
@@ -325,5 +325,8 @@ import VueApexCharts from 'vue-apexcharts'
 <style>
  .pull-right{
     float:right !important;
+ }
+ .dpicker{
+    background-color: white !important;
  }
 </style>
