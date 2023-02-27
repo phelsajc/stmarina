@@ -36,6 +36,7 @@ let transaction_list = require('./components/transactions/index.vue').default
 let transaction_report = require('./components/transactions/DailyReports.vue').default
 //reports
 let reports = require('./components/transactions/Reports.vue').default
+let yearly_report = require('./components/transactions/YearlyReports.vue').default
 //ReceivedProducts
 let rproduct_list = require('./components/rec_products/index.vue').default
 let rproduct_add = require('./components/rec_products/create.vue').default
@@ -78,9 +79,10 @@ export const routes = [
     { path: '/transaction/:id', component: transaction, name: 'transaction' },
     { path: '/transaction_list', component: transaction_list, name: 'transaction_list' },
     { path: '/transaction_report', component: transaction_report, name: 'transaction_report' },
-
+    
     //Reports
     { path: '/reports', component: reports, name: 'reports' },
+    { path: '/yearly_report', component: yearly_report, name: 'yearly_report' },
     
     //Products
     { path: '/rproduct_list', component: rproduct_list, name: 'rproduct_list' },

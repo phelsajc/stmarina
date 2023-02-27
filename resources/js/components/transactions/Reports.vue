@@ -28,8 +28,9 @@
                                 <div class="col-sm-3">
                                     <div class="form-group ">
                                         <label>From</label>
-                                        <datepicker name="birthdate" input-class ="dpicker" :minimumView="'month'" :maximumView="'month'" v-model="filter.from" :bootstrap-styling=true></datepicker>
+                                        <datepicker name="birthdate" input-class ="dpicker" :minimumView="'month'" :maximumView="'month'" v-model="filter.from" :bootstrap-styling=true></datepicker>                                      
                                     </div>
+       
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group ">
@@ -113,7 +114,7 @@ import VueApexCharts from 'vue-apexcharts'
                         curve: 'straight'
                     },
                     title: {
-                        text: 'Graph Report',
+                        text: 'Monthly Report',
                         align: 'left'
                     },
                     grid: {

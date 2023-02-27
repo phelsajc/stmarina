@@ -75,7 +75,7 @@
                     })
                     //this.$router.push({name: 'home'})
                     
-                    this.$router.push({ name: 'all_employee' })
+                    this.$router.push({ name: 'transaction_list' })
                     //location = "/all_employee"
                 })
                 .catch(error => this.errors = error.response.data.errors)

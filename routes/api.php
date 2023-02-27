@@ -79,6 +79,7 @@ Route::match(['get','post'],'transactions','TransactionController@index');
 Route::match(['get','post'],'getTransactionHeader/{id}','TransactionController@getTransactionHeader');
 Route::match(['get','post'],'report','TransactionController@report');
 Route::match(['get','post'],'DailyReport','TransactionController@DailyReport');
+Route::match(['get','post'],'YearlyReport','TransactionController@yearly_report');
 
 
 #ReceivedProducts

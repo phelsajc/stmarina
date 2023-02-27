@@ -160,8 +160,6 @@ class TransactionController extends Controller
         $datasets = array(["series"=>$data_array,'cat'=>array_unique($cat_array)]);
         return response()->json( $datasets);
     }
-   
-
     
     public function DailyReport(Request $request){
         $date = date_format(date_create($request->items['date']),'d M Y');
@@ -182,7 +180,57 @@ class TransactionController extends Controller
             $grandTotal +=$total_sales;  
             $data[] = $arr;
         }
-        $datasets = array(["data"=>$data,"count"=>$grandTotal,]);
+        $datasets = array(["data"=>$data,"count"=>$grandTotal,'query'=>$query,'q2'=>"select * from transaction where transactiondate = '$date'"]);
         return response()->json($datasets);
+    }
+    
+    public function yearly_report(Request $request)
+    {
+        $sd = date_format(date_create($request->items['from']),'Y');
+        $td = date_format(date_create($request->items['to']),'Y');
+        $data =  DB::connection('pgsql')->select("select  tt.companyid,count(tt.companyid) as cnt
+        from transaction tt
+         where date_part('year',tt.transactiondate) between '$sd' and '$td' group by tt.companyid;");
+       
+        /* $start    = new \DateTime($request->items['from']);
+        $start->modify('first day of this month');
+        $end      = new \DateTime($request->items['to']);
+        $end->modify('first day of next month');
+        $interval = \DateInterval::createFromDateString('1 month');
+        $period   = new \DatePeriod($start, $interval, $end); */
+        //echo iterator_count($period);
+        
+        $date1 = new \DateTime($request->items['from']);
+        $date2 = new \DateTime($request->items['to']);
+        $period = $date1->diff($date2);
+
+        $data_array = array();
+        $cat_array = array();
+        foreach ($data as $key => $value) {
+            $arr = array();
+            $arr_data = array();
+            $company_data = Company::where(['id'=>$value->companyid])->first();             
+
+            for ($i=0; $i <=$period->y; $i++) { 
+                $year = $sd+$i;
+                $cat_array[] = $year;
+                $tdata = DB::connection('pgsql')->select("select extract(year from tt.transactiondate) as yyyy,tt.companyid,count(tt.companyid) as cnt,sum(tt.total) as total
+                from transaction_details tt
+                where date_part('year',tt.transactiondate) between '$year' and '$year' and companyid = $value->companyid
+                group by 1,tt.companyid;");
+                $totals = 0;
+                foreach ($tdata as $key2 => $value2) {
+                    $totals += $value2->total;
+                }
+                $arr_data[] = $totals;
+            }
+
+
+            $arr['name'] =  $company_data->company;
+            $arr['data'] =  $arr_data ;
+            $data_array[] = $arr;
+        }
+        $datasets = array(["series"=>$data_array,'cat'=>array_unique($cat_array)]);
+        return response()->json( $datasets);
     }
 }

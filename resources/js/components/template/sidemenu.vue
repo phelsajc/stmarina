@@ -29,48 +29,12 @@
             role="menu"
             data-accordion="false"
           >
-
-            <!-- <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-chart-pie"></i>
-                <p>
-                  Master File
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <router-link to="/rproduct_list" class="collapse-item"
-                      >Received</router-link
-                    >
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <router-link to="/product_list" class="collapse-item"
-                      >Products</router-link
-                    >
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <router-link to="/company_list" class="collapse-item"
-                      >Company</router-link
-                    >
-                  </a>
-                </li>
-              </ul>
-            </li> -->
             <li class="nav-item" :class="{'menu-open':this.$route.name=='company_add'||this.$route.name=='product_add'||this.$route.name=='rproduct_add'||this.$route.name=='rproduct_list'||this.$route.name=='company_list'||this.$route.name=='product_list'}">
             <a href="#" class="nav-link" :class="{'active':this.$route.name=='rproduct_list'||this.$route.name=='company_list'||this.$route.name=='product_list'}">
-              <i class="nav-icon fas fa-edit"></i>
+              <!-- <i class="nav-icon fas fa-edit"></i> -->
+              <i class="nav-icon fas fa-folder-plus"></i>
               <p>
                 Master Files
-                <i class="fas fa-angle-left right"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
@@ -99,42 +63,14 @@
                 </a>
               </li>
             </ul>
-
-            <!-- <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <router-link to="/rproduct_list" class="collapse-item"
-                      >Received</router-link
-                    >
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <router-link to="/product_list" class="collapse-item"
-                      >Products</router-link
-                    >
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <router-link to="/company_list" class="collapse-item"
-                      >Company</router-link
-                    >
-                  </a>
-                </li>
-              </ul> -->
               
           </li>
 
             <li class="nav-item" :class="{'menu-open':this.$route.name=='collection_add'||this.$route.name=='collection_list'||this.$route.name=='collection_reports'}">
               <a href="#" class="nav-link" :class="{'active':this.$route.name=='collection_list'||this.$route.name=='collection_reports'}">
-                <i class="nav-icon fas fa-chart-pie"></i>
+                <i class="nav-icon fas fa-random"></i>
                 <p>
                   Collections
-                  <i class="right fas fa-angle-left"></i>
                 </p>
               </a>
               <ul class="nav nav-treeview">
@@ -158,9 +94,9 @@
             </li>
 
             
-            <li class="nav-item" :class="{'menu-open':this.$route.name=='transaction'||this.$route.name=='transaction_list'||this.$route.name=='reports'||this.$route.name=='transaction_report'}">
+            <li class="nav-item" :class="{'menu-open':this.$route.name=='transaction'||this.$route.name=='transaction_list'||this.$route.name=='reports'||this.$route.name=='yearly_report'||this.$route.name=='transaction_report'}">
               <a href="#" class="nav-link" :class="{'active':this.$route.name=='transaction_list'||this.$route.name=='reports'||this.$route.name=='transaction_report'}">
-                <i class="nav-icon fas fa-chart-pie"></i>
+                <i class="nav-icon fas fa-file-invoice"></i>
                 <p>
                   Invoice
                   <i class="right fas fa-angle-left"></i>
@@ -175,22 +111,36 @@
                 >
               </a>
             </li>  
-                <li class="nav-item">
-              <a href="#" class="nav-link" id="usermenu" :class="{'active':this.$route.name=='reports'}">
-                <i class="far fa-circle nav-icon"></i>
-                <router-link to="/reports" class="collapse-item"
-                  >Reports</router-link
-                >
-              </a>
-            </li>
-                <li class="nav-item">
-              <a href="#" class="nav-link" id="usermenu" :class="{'active':this.$route.name=='transaction_report'}">
-                <i class="far fa-circle nav-icon"></i>
-                <router-link to="/transaction_report" class="collapse-item"
-                  >Daily Reports</router-link
-                >
-              </a>
-            </li>
+
+            <li class="nav-item" :class="{'menu-open':this.$route.name=='reports'||this.$route.name=='yearly_report'||this.$route.name=='transaction_report'}">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                   Reports
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-circle nav-icon"  :class="{'fa-dot-circle':this.$route.name=='transaction_report'}"></i>     
+                      <router-link to="/transaction_report" class="">Daily</router-link>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-circle nav-icon"  :class="{'fa-dot-circle':this.$route.name=='reports'}"></i>     
+                      <router-link to="/reports" class="">Monthly</router-link>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-circle nav-icon"  :class="{'fa-dot-circle':this.$route.name=='yearly_report'}"></i>     
+                      <router-link to="/yearly_report" class="">Yearly</router-link>
+                    </a>
+                  </li>
+                </ul>
+              </li>
               </ul>
             </li>
   
