@@ -105,8 +105,12 @@ import AppStorage from '../../Helpers/AppStorage';
             if(!User.loggedIn()){
                 this.$router.push({name: '/'})
             }
-            this.getPatientInformation();
-            this.editForm();
+            let checkId = this.$route.params.id
+            if(checkId!=0){
+                this.getId = checkId;
+                this.editForm();
+                this.isNew = false;
+            }
         },
 
         data() {
@@ -121,65 +125,47 @@ import AppStorage from '../../Helpers/AppStorage';
                     contactno: '',
                     pk_pspatregisters: '',
                 },
+                getId: 0,
+                isNew: true,
                 errors:{}
             }
         },
 
         methods:{
             addEmployee(){
-                axios.post('/api/company-add',this.form)
-                .then(res => {
-                    this.$router.push({name: 'company_list'});
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Saved successfully'
+                
+                if(this.isNew){
+                    axios.post('/api/company-add',this.form)
+                    .then(res => {
+                        this.$router.push({name: 'company_list'});
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Saved successfully'
+                        })
                     })
-                })
-                .catch(error => this.errors = error.response.data.errors)
-            },
-            onFileSelected(event){
-                let file = event.target.files[0];
-                if(file.size > 1048770){
-                    Notification.image_Validation()
-                    console.log(1)
+                    .catch(error => this.errors = error.response.data.errors)
                 }else{
-                    let reader = new FileReader();
-                    reader.onload = event => {
-                        this.form.newphoto =  event.target.result
-                    };
-                    reader.readAsDataURL(file)
-                }
-
-            },
-            addInitialdata(){
-                axios.post('/api/saveInitialData',this.form)
-                .then(res => {
-                    Notification.success()
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Saved successfully'
+                    axios.post('/api/company-update',{
+                        data: this.form,
+                        id: this.getId
                     })
-                    this.$router.push({name: 'all_employee'});
-                })
-                .catch(error => this.errors = error.response.data.errors)
-            },
-            getPatientInformation(){
-                axios.get('/api/getPxInfo/'+this.$route.params.id)
-                .then(({data}) => ( this.user_info = data))
-                .catch()
+                    .then(res => {
+                        this.$router.push({name: 'company_list'});
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Updated successfully'
+                        })
+                    })
+                    .catch(error => this.errors = error.response.data.errors)
+                }
             },
             editForm(){                
                 let id = this.$route.params.id
-                axios.get('/api/getFormDetail/'+id)
+                axios.get('/api/company-detail/'+id)
                     .then(({ data }) => (
-                    console.log("l "+data?data:0),
-                        this.form.o2_stat = !Object.keys(data).length === 0 ? this.form.o2_stat : data.o2_stat,  
-                        this.form.temp = !Object.keys(data).length === 0 ? this.form.temp : data.temp,             
-                        this.form.rr = !Object.keys(data).length === 0 ? this.form.rr : data.rr,             
-                        this.form.bp = !Object.keys(data).length === 0 ? this.form.bp : data.bp,             
-                        this.form.weight = !Object.keys(data).length === 0 ? this.form.weight : data.weight,             
-                        this.form.height = !Object.keys(data).length === 0 ? this.form.height : data.height,             
-                        this.form.chiefcomplaints = !Object.keys(data).length === 0 ? this.form.chiefcomplaints : data.chiefcomplaints                                 
+                        this.form.company = data.company,  
+                        this.form.address = data.address,             
+                        this.form.desc = data.description             
                 ))
                 .catch(console.log('error'))
             }

@@ -73,7 +73,7 @@ export const routes = [
 
     //Company
     { path: '/company_list', component: company_list, name: 'company_list' },
-    { path: '/company_add', component: company_add, name: 'company_add' },
+    { path: '/company_add/:id', component: company_add, name: 'company_add' },
     
     //Transaction
     { path: '/transaction/:id', component: transaction, name: 'transaction' },

@@ -63,7 +63,7 @@ class ReceivedProductController extends Controller
         $p->date_receive = $request->dop;
         $p->pid = $request->pid;
         $p->created_dt = date("Y-m-d H:i");
-        $p->created_by = $request->qty; 
+        $p->created_by = $request->userid; 
         $p->save();
         return true;
     }
@@ -82,7 +82,7 @@ class ReceivedProductController extends Controller
             'pid'=> $request->data['pid'],
             'quantity'=> $request->data['qty'],
             'date_receive'=> $request->data['dor'],
-            'updated_by'=> 1,
+            'updated_by'=> $request->data['userid'],
             'updated_dt'=>   date("Y-m-d H:i"),
         ]);
         return response()->json(true);

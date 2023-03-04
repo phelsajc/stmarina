@@ -23,7 +23,7 @@
                   <div class="card">
                     <div class="card-header">
                       <h3 class="card-title">&nbsp;</h3>                
-                      <router-link to="/company_add" class="btn btn-primary">Add</router-link>
+                      <router-link to="/company_add/0" class="btn btn-primary">Add</router-link>
                     </div>
                     
                     <div class="card-body"> 
@@ -34,10 +34,10 @@
                       
                       <ul class="list-group">
                           <input type="text" v-model="form.searchTerm2" @change="filterEmployee()" class="form-control to-right" style="width:100%;" placeholder="Search user here"> 
-                        <li class="list-group-item " v-for="e in filtersearch" :key="e.id">
+                          
+                    <router-link v-for="e in filtersearch" :key="e.id" :to="{name: 'company_add',params:{id:e.id}}">    
+                        <li class="list-group-item " >
                              
-                    <!--  <span class="badge badge-info">                           {{e.sex}}</span>
-                      <span class="badge badge-success">                          {{e.attending_phy}}</span> -->
                                         <div class="row">
                                           <div class="col-6  float-left">
                                             <div class="d-flex w-100 justify-content-between">
@@ -47,15 +47,9 @@
                                       
                       <span class="badge badge-secondary">  {{e.desc}}</span>
                                           </div>
-                                          <div class="col-md-6  float-right">
-                          <button class="btn btn-success float-right">UPDATE</button>
-                          <button class="btn btn-danger float-right">DELETE</button>
-                          
-                                          </div>
                                         </div>
-                          <!-- <button class="btn btn-success float-right">EDIT</button><br>
-                          <button class="btn btn-success float-right">EDIT</button> -->
                             </li>
+                            </router-link>
                       </ul>
                       <br>
                       <nav aria-label="Page navigation example" class="to-right">

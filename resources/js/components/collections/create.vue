@@ -167,6 +167,7 @@ import Datepicker from 'vuejs-datepicker'
                     dateDeposited: '',
                     crno: '',
                     dsno: '',
+                    userid: User.user_id(),
                 },
                 user_info:{
                     patientname: '',
@@ -204,11 +205,6 @@ import Datepicker from 'vuejs-datepicker'
                     })
                     .catch(error => this.errors = error.response.data.errors)
                 }                
-            },
-            getPatientInformation(){
-                axios.get('/api/getPxInfo/'+this.$route.params.id)
-                .then(({data}) => ( this.user_info = data))
-                .catch()
             },
             editForm(){                
                 let id = this.$route.params.id

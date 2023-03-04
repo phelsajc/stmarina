@@ -64,7 +64,7 @@ class ProductController extends Controller
         $p->code = $request->code;
         $p->price = $request->price;
         $p->created_dt = date("Y-m-d H:i");
-        $p->created_by = $request->qty;   
+        $p->created_by = $request->userid;   
         $p->save();
         return true;
     }
@@ -84,7 +84,7 @@ class ProductController extends Controller
             'uom'=>  $request->data['uom'],
             //'dop'=> $request->data['dop'],
             'code'=> $request->data['code'],
-            'updated_by'=> 1,
+            'updated_by'=> $request->data['userid'],
             'updated_dt'=>   date("Y-m-d H:i"),
             'price'=>  $request->data['price'],
         ]);

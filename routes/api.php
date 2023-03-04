@@ -90,7 +90,7 @@ Route::match(['get','post'],'rec_products-detail/{id}','ReceivedProductControlle
 Route::match(['get','post'],'rec_products-delete/{id}','ReceivedProductController@delete');
 Route::match(['get','post'],'rec_searchProduct','ReceivedProductController@searchProduct');
 
-#COllections
+#Collections
 Route::match(['get','post'],'collection-add','CollectionController@store');
 Route::match(['get','post'],'collection-update','CollectionController@update');
 Route::match(['get','post'],'collection','CollectionController@index');

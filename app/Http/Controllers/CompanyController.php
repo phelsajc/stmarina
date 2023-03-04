@@ -31,6 +31,7 @@ class CompanyController extends Controller
             $arr = array();
             $arr['company'] =  $value->company;
             $arr['desc'] =  $value->description;
+            $arr['id'] =  $value->id;
             $arr['address'] =  $value->address;
             $data_array[] = $arr;
         }
@@ -67,9 +68,9 @@ class CompanyController extends Controller
     public function update(Request $request)
     {
         Company::where(['id'=>$request->id])->update([
-            'company'=> $request->company,
-            'description'=> $request->desc,
-            'address'=> $request->address,
+            'company'=> $request->data['company'],
+            'description'=> $request->data['desc'],
+            'address'=> $request->data['address'],
         ]);
         return true;
     }

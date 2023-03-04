@@ -70,7 +70,7 @@ class CollectionController extends Controller
         $p->date_deposited = $request->dateDeposited;
         $p->crno = $request->crno;
         $p->dsno = $request->dsno;
-        $p->created_by = 1;
+        $p->created_by = $request->userid;
         $p->created_dt = date("Y-m-d");
         $p->save();         
         return true;
@@ -88,14 +88,14 @@ class CollectionController extends Controller
             'type' => $request->data['type'],
             'check_date' => $request->data['chequeDate'],
             'companyid' => $request->data['company'],
-            'si_dr_no' => $request->data['company'],
+            'si_dr_no' => $request->data['sidr'],
             'amount' => $request->data['amount'],
             'details' => $request->data['details'],
             'with_ewt_deductions' => $request->data['ewt'],
             'date_deposited' => $request->data['dateDeposited'],
             'crno' => $request->data['crno'],
             'dsno' => $request->data['dsno'],
-            'created_by' => 1,
+            'updated_by' => $request->data['userid'],
             'updated_dt' => date('Y-m-d'),
         ]);
         return true;
