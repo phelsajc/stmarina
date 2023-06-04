@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Model\Transaction;
 use App\Model\Transaction_details;
 use App\Model\Company;
+use App\Model\Collectibles;
 use DB;
 
 class TransactionController extends Controller
@@ -18,14 +19,14 @@ class TransactionController extends Controller
         $start = $request->start?$request->start:0;
         $val = $request->searchTerm2;
         if($val!=''||$start>0){   
-            $data =  DB::connection('pgsql')->select("select * from transaction where invoiceno ilike '%".$val."%' LIMIT $length offset $start");
-            $count =  DB::connection('pgsql')->select("select * from transaction where invoiceno ilike '%".$val."%' ");
+            $data =  DB::connection('mysql')->select("select * from transaction where invoiceno like '%".$val."%' LIMIT $length offset $start");
+            $count =  DB::connection('mysql')->select("select * from transaction where invoiceno like '%".$val."%' ");
         }else{
-            $data =  DB::connection('pgsql')->select("select * from transaction LIMIT $length");
-            $count =  DB::connection('pgsql')->select("select * from transaction");
+            $data =  DB::connection('mysql')->select("select * from transaction LIMIT $length");
+            $count =  DB::connection('mysql')->select("select * from transaction");
         }
         
-        $count_all_record =  DB::connection('pgsql')->select("select count(*) as count from transaction");
+        $count_all_record =  DB::connection('mysql')->select("select count(*) as count from transaction");
 
         $data_array = array();
 
@@ -56,12 +57,20 @@ class TransactionController extends Controller
         date_default_timezone_set('Asia/Manila');
         $p = new Transaction;
         $p->invoiceno = $request->head['invoiceno'];
+        $p->terms = $request->head['terms'];
         $p->companyid = $request->head['companyid']; 
         $p->created_by = $request->user;
         $p->created_dt = date('Y-m-d');
         $p->status = 1; 
-        $p->transactiondate = $request->head['dot'];
-        $p->save();         
+        $p->transactiondate = date_create($request->head['dot']);
+        $p->save();  
+        
+        if($request->head['terms']>0){
+            $c = new Collectibles;
+            $c->companyid = $request->head['companyid'];
+            $c->transaction_id = $p->id;
+            $c->save();  
+        }
         
         $getTotal = 0;
         foreach ($request->items as $val ) {
@@ -71,7 +80,7 @@ class TransactionController extends Controller
             $d->product = $val['product'];
             $d->qty = $val['qty'];
             $d->companyid = $request->head['companyid']; 
-            $d->transactiondate = $request->head['dot'];
+            $d->transactiondate = date_create($request->head['dot']);
             $d->total = $val['total'];
             $d->price = $val['price'];
             $getTotal += $val['total'];
@@ -110,11 +119,11 @@ class TransactionController extends Controller
 
     public function report(Request $request)
     {
-        /* $data =  DB::connection('pgsql')->select("select to_char(tt.transactiondate,'Mon') as mon,extract(year from tt.transactiondate) as yyyy,tt.companyid,count(tt.companyid) as cnt
+        /* $data =  DB::connection('mysql')->select("select to_char(tt.transactiondate,'Mon') as mon,extract(year from tt.transactiondate) as yyyy,tt.companyid,count(tt.companyid) as cnt
         from transaction tt group by 1,2,tt.companyid;"); */
-        $sd = date_format(date_create($request->items['from']),'d F Y');
-        $td = date_format(date_create($request->items['to']),'d F Y');
-        $data =  DB::connection('pgsql')->select("select  tt.companyid,count(tt.companyid) as cnt
+        $sd = date_format(date_create($request->items['from']),'Y-m-d');
+        $td = date_format(date_create($request->items['to']),'Y-m-d');
+        $data =  DB::connection('mysql')->select("select  tt.companyid,count(tt.companyid) as cnt
         from transaction tt
          where tt.transactiondate between '$sd' and '$td' group by tt.companyid;");
        
@@ -132,29 +141,42 @@ class TransactionController extends Controller
             $arr = array();
             $arr_data = array();
             $company_data = Company::where(['id'=>$value->companyid])->first(); 
-            /* $tdata = DB::connection('pgsql')->select("SELECT *
+            /* $tdata = DB::connection('mysql')->select("SELECT *
             FROM transaction_details td where transactiondate between '01 Feb 2023' and '28 Mar 2023' and companyid = $value->companyid"); */
             
 
             foreach ($period as $dt) {
                 //echo $dt->format("Y-m") . "<br>\n";
                 $cat_array[] = $dt->format("M");
-                $last_day = date('t F Y', strtotime($dt->format("Y-m-d")));
-                $start_day = $dt->format("d F Y");
-                $tdata = DB::connection('pgsql')->select("select  to_char(tt.transactiondate,'Mon') as mon,extract(year from tt.transactiondate) as yyyy,tt.companyid,count(tt.companyid) as cnt,sum(tt.total) as total
+                //$last_day = date('Y-m-d', strtotime($dt->format("Y-m-d")));
+                $start_day = $dt->format("Y-m-d");
+                $last_day = date('Y-m-t', strtotime($start_day));
+                /* $tdata = DB::connection('mysql')->select("select  MONTH(tt.transactiondate) as mon,YEAR(tt.transactiondate) as yyyy,tt.companyid,count(tt.companyid) as cnt,sum(tt.total) as total
                 from transaction_details tt
                 where tt.transactiondate between '$start_day' and '$last_day' and companyid = $value->companyid
-                group by 1,2,tt.companyid;");
+                group by 1,2,tt.companyid;"); */
+                //$q = "select  MONTH(tt.transactiondate) as mon,YEAR(tt.transactiondate) as yyyy,tt.companyid,count(tt.companyid) as cnt,sum(tt.total) as total
+                //from transaction_details tt
+                /*where (date(tt.transactiondate) between date('$start_day') and date('$last_day')) and companyid = $value->companyid*/
+                //where date(tt.transactiondate) = '$start_day' and companyid = $value->companyid
+                //group by 1,2,tt.companyid;";
+                $q = "select  MONTH(tt.transactiondate) as mon,YEAR(tt.transactiondate) as yyyy,tt.companyid,count(tt.companyid) as cnt,sum(tt.total) as total from transaction_details tt where (date(tt.transactiondate) between date('$start_day') and date('$last_day')) and companyid = $value->companyid group by 1,2,tt.companyid;";
+                $tdata = DB::connection('mysql')->select($q);
                 $totals = 0;
+
+                
+
                 foreach ($tdata as $key2 => $value2) {
                     $totals += $value2->total;
                 }
-                $arr_data[] = $totals;
+                $arr_data[] = $totals.' '.$start_day.' '.$last_day ;
+               // $arr_data[] = $totals.' '.$last_day ;
+                //unset($tdata);
             }
 
 
             $arr['name'] =  $company_data->company;
-            $arr['data'] =  $arr_data ;
+            $arr['data'] =  $arr_data;
             $data_array[] = $arr;
         }
         $datasets = array(["series"=>$data_array,'cat'=>array_unique($cat_array)]);
@@ -162,23 +184,31 @@ class TransactionController extends Controller
     }
     
     public function DailyReport(Request $request){
-        $date = date_format(date_create($request->items['date']),'d M Y');
-        $query = DB::connection('pgsql')->select("select * from transaction where transactiondate = '$date'");
+        $date = date_format(date_create($request->items['date']),'Y-m-d');
+        $query = DB::connection('mysql')->select("select * from transaction where date(transactiondate) = date('$date')");
         $data = array();
         $grandTotal = 0;
         foreach ($query as $key => $value ) {
             $sales = Transaction_details::where('transaction_id',$value->id)->get();
             $Company = Company::where('id',$value->companyid)->first();
             $total_sales = 0;
+            $get_qty = 0;
+            $get_price = 0;
             foreach ($sales as $key => $svalue) {
+                $get_qty = $svalue->qty;
+                $get_price = $svalue->price;
                 $total_sales += $svalue->total;
             }
             $arr = array();
             $arr['company'] = $Company->company;
             $arr['inv'] = $value->invoiceno;
             $arr['sales'] = $total_sales;
+            $arr['qty'] = $get_qty;//$sales->qty;
+            $arr['price'] = $get_price;//$sales->price;
             $grandTotal +=$total_sales;  
             $data[] = $arr;
+            $get_qty = 0;
+            $get_price = 0;
         }
         $datasets = array(["data"=>$data,"count"=>$grandTotal,'query'=>$query,'q2'=>"select * from transaction where transactiondate = '$date'"]);
         return response()->json($datasets);
@@ -188,9 +218,9 @@ class TransactionController extends Controller
     {
         $sd = date_format(date_create($request->items['from']),'Y');
         $td = date_format(date_create($request->items['to']),'Y');
-        $data =  DB::connection('pgsql')->select("select  tt.companyid,count(tt.companyid) as cnt
+        $data =  DB::connection('mysql')->select("select  tt.companyid,count(tt.companyid) as cnt
         from transaction tt
-         where date_part('year',tt.transactiondate) between '$sd' and '$td' group by tt.companyid;");
+         where YEAR(tt.transactiondate) between '$sd' and '$td' group by tt.companyid;");
        
         /* $start    = new \DateTime($request->items['from']);
         $start->modify('first day of this month');
@@ -214,9 +244,9 @@ class TransactionController extends Controller
             for ($i=0; $i <=$period->y; $i++) { 
                 $year = $sd+$i;
                 $cat_array[] = $year;
-                $tdata = DB::connection('pgsql')->select("select extract(year from tt.transactiondate) as yyyy,tt.companyid,count(tt.companyid) as cnt,sum(tt.total) as total
+                $tdata = DB::connection('mysql')->select("select YEAR(tt.transactiondate) as yyyy,tt.companyid,count(tt.companyid) as cnt,sum(tt.total) as total
                 from transaction_details tt
-                where date_part('year',tt.transactiondate) between '$year' and '$year' and companyid = $value->companyid
+                where YEAR(tt.transactiondate) between '$year' and '$year' and companyid = $value->companyid
                 group by 1,tt.companyid;");
                 $totals = 0;
                 foreach ($tdata as $key2 => $value2) {

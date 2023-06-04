@@ -49,18 +49,27 @@
                                         <small class="text-danger" v-if="errors.type">{{ errors.type[0] }}</small>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group ">
                                         <label>Cheque Date</label>
                                         <datepicker name="chequeDate" v-model="form.chequeDate" input-class ="dpicker" :bootstrap-styling=true></datepicker>
                                         <small class="text-danger" v-if="errors.chequeDate">{{ errors.chequeDate[0] }}</small>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label>Company</label>                                        
-                                        <select v-model="form.company" class="form-control" >
+                                        <select v-model="form.company" class="form-control" @change="getInvoices($event)">
                                             <option v-for="e in companies" :key="e.id" :value="e.id">{{e.company}}</option>
+                                        </select>    
+                                        <small class="text-danger" v-if="errors.company">{{ errors.company[0] }}</small>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Invoice #</label>                                        
+                                        <select v-model="form.invoices" class="form-control" >
+                                            <option v-for="e in get_Invoices" :key="e.id" :value="e.id">{{e.si}}</option>
                                         </select>    
                                         <small class="text-danger" v-if="errors.company">{{ errors.company[0] }}</small>
                                     </div>
@@ -84,11 +93,11 @@
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <label>Amount</label>     
-                                        <input type="number" class="form-control" id="" placeholder="" v-model="form.amount">    
+                                        <input type="text" class="form-control" id="" placeholder="" v-model="form.amount">    
                                         <small class="text-danger" v-if="errors.amount">{{ errors.amount[0] }}</small>                                
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label>Details</label>     
                                         <input type="text" class="form-control" id="" placeholder="" v-model="form.details">    
@@ -102,11 +111,18 @@
                                         <small class="text-danger" v-if="errors.ewt">{{ errors.ewt[0] }}</small>                                
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label>Date Deposited</label>     
                                         <datepicker name="birthdate" input-class ="dpicker" v-model="form.dateDeposited" class="dpicker" :bootstrap-styling=true></datepicker>
                                         <small class="text-danger" v-if="errors.dateDeposited">{{ errors.dateDeposited[0] }}</small>                                
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Date Confirmed</label>     
+                                        <datepicker name="birthdate" input-class ="dpicker" v-model="form.dateConfirmed" class="dpicker" :bootstrap-styling=true></datepicker>
+                                        <small class="text-danger" v-if="errors.dateConfirmed">{{ errors.dateConfirmed[0] }}</small>                                
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
@@ -156,6 +172,7 @@ import Datepicker from 'vuejs-datepicker'
         data() {
             return {
                 companies: [],
+                get_Invoices: [],
                 form: {
                     type: '',
                     chequeDate: '',
@@ -165,6 +182,8 @@ import Datepicker from 'vuejs-datepicker'
                     details: '',
                     ewt: '',
                     dateDeposited: '',
+                    dateConfirmed: '',
+                    invoices: '',
                     crno: '',
                     dsno: '',
                     userid: User.user_id(),
@@ -227,6 +246,13 @@ import Datepicker from 'vuejs-datepicker'
                 axios.get('/api/getCompanies')
                     .then(({ data }) => (
                         this.companies = data        
+                ))
+                .catch(console.log('error'))
+            },          
+            getInvoices(event){
+                axios.get('/api/collection-getInvoices/'+event.target.value)
+                    .then(({ data }) => (
+                        this.get_Invoices = data        
                 ))
                 .catch(console.log('error'))
             },

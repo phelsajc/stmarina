@@ -23,15 +23,15 @@ class PatientController extends Controller
         $val = $request->searchTerm2;
         $dd=1;
         if($val!=''||$start>0){   
-            $dd =  "select * from patients_1 where patientname ilike '%".$val."%' and cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."' LIMIT $length offset $start";
-            $data =  DB::connection('pgsql')->select("select * from patients_1 where patientname ilike '%".$val."%' and cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."' LIMIT $length offset $start");
-            $count =  DB::connection('pgsql')->select("select * from patients_1 where patientname ilike '%".$val."%' and cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."' ");
+            $dd =  "select * from patients_1 where patientname like '%".$val."%' and cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."' LIMIT $length offset $start";
+            $data =  DB::connection('mysql')->select("select * from patients_1 where patientname like '%".$val."%' and cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."' LIMIT $length offset $start");
+            $count =  DB::connection('mysql')->select("select * from patients_1 where patientname like '%".$val."%' and cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."' ");
         }else{
-            $data =  DB::connection('pgsql')->select("select * from patients_1 where cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."' LIMIT $length");
-            $count =  DB::connection('pgsql')->select("select * from patients_1 where cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."'");
+            $data =  DB::connection('mysql')->select("select * from patients_1 where cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."' LIMIT $length");
+            $count =  DB::connection('mysql')->select("select * from patients_1 where cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."'");
         }
         
-        $count_all_record =  DB::connection('pgsql')->select("select count(*) as count from patients_1 where cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."'");
+        $count_all_record =  DB::connection('mysql')->select("select count(*) as count from patients_1 where cast(registrydate as date) >= '".date('Y-m-d', strtotime('-3 days'))."'");
 
         $data_array = array();
 
@@ -223,15 +223,15 @@ class PatientController extends Controller
         $val = $request->searchTerm2;
         $dd=1;
         if($val!=''||$start>0){   
-            $dd =  "select * from patients_1 where patientname ilike '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length offset $start";
-            $data =  DB::connection('pgsql')->select("select * from patients_1 where patientname ilike '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length offset $start");
-            $count =  DB::connection('pgsql')->select("select * from patients_1 where patientname ilike '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' ");
+            $dd =  "select * from patients_1 where patientname like '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length offset $start";
+            $data =  DB::connection('mysql')->select("select * from patients_1 where patientname like '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length offset $start");
+            $count =  DB::connection('mysql')->select("select * from patients_1 where patientname ilike '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' ");
         }else{
-            $data =  DB::connection('pgsql')->select("select * from patients_1 where cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length");
-            $count =  DB::connection('pgsql')->select("select * from patients_1 where cast(registrydate as date) >= '".date("Y-m-d")."'");
+            $data =  DB::connection('mysql')->select("select * from patients_1 where cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length");
+            $count =  DB::connection('mysql')->select("select * from patients_1 where cast(registrydate as date) >= '".date("Y-m-d")."'");
         }
         
-        $count_all_record =  DB::connection('pgsql')->select("select count(*) as count from patients_1 where cast(registrydate as date) >= '".date("Y-m-d")."'");
+        $count_all_record =  DB::connection('mysql')->select("select count(*) as count from patients_1 where cast(registrydate as date) >= '".date("Y-m-d")."'");
 
         $data_array = array();
 

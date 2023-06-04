@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\Collections;
 use App\Model\Company;
+use App\Model\Collectibles;
 use DB;
 
 class CollectionController extends Controller
@@ -17,14 +18,14 @@ class CollectionController extends Controller
         $start = $request->start?$request->start:0;
         $val = $request->searchTerm2;
         if($val!=''||$start>0){   
-            $data =  DB::connection('pgsql')->select("select * from collections where si_dr_no ilike '%".$val."%' LIMIT $length offset $start");
-            $count =  DB::connection('pgsql')->select("select * from collections where si_dr_no ilike '%".$val."%' ");
+            $data =  DB::connection('mysql')->select("select * from collections where si_dr_no like '%".$val."%' LIMIT $length offset $start");
+            $count =  DB::connection('mysql')->select("select * from collections where si_dr_no like '%".$val."%' ");
         }else{
-            $data =  DB::connection('pgsql')->select("select * from collections LIMIT $length");
-            $count =  DB::connection('pgsql')->select("select * from collections");
+            $data =  DB::connection('mysql')->select("select * from collections LIMIT $length");
+            $count =  DB::connection('mysql')->select("select * from collections");
         }
         
-        $count_all_record =  DB::connection('pgsql')->select("select count(*) as count from collections");
+        $count_all_record =  DB::connection('mysql')->select("select count(*) as count from collections");
 
         $data_array = array();
 
@@ -61,18 +62,29 @@ class CollectionController extends Controller
         date_default_timezone_set('Asia/Manila');
         $p = new Collections;
         $p->type = $request->type;
-        $p->check_date = $request->chequeDate;
+        $p->check_date = date_create($request->chequeDate);
         $p->companyid = $request->company;
         $p->si_dr_no = $request->sidr;
         $p->amount = $request->amount;
         $p->details = $request->details;
         $p->with_ewt_deductions = $request->ewt;
-        $p->date_deposited = $request->dateDeposited;
+        $p->date_deposited = date_create($request->dateDeposited);
+        $p->date_confirmed = date_create($request->dateConfirmed);
         $p->crno = $request->crno;
         $p->dsno = $request->dsno;
         $p->created_by = $request->userid;
         $p->created_dt = date("Y-m-d");
-        $p->save();         
+        $p->save();        
+        
+       // $check_credit = Collectibles::where(['companyid'=>$request->company,'status'=>'UNPAID','status'=>'UNPAID']);        
+        $check_credit = Collectibles::where(['id'=>$request->invoices]);
+        if($check_credit){
+            //Collectibles::where(['companyid'=>$request->company,'status'=>'UNPAID'])->update([
+            Collectibles::where(['id'=>$request->invoices])->update([
+                'collection_id' => $p->id,
+                'status' => 'PAID'
+            ]);
+        }
         return true;
     }
 
@@ -92,7 +104,7 @@ class CollectionController extends Controller
             'amount' => $request->data['amount'],
             'details' => $request->data['details'],
             'with_ewt_deductions' => $request->data['ewt'],
-            'date_deposited' => $request->data['dateDeposited'],
+            'date_deposited' => date_create($request->data['dateDeposited']),
             'crno' => $request->data['crno'],
             'dsno' => $request->data['dsno'],
             'updated_by' => $request->data['userid'],
@@ -111,12 +123,12 @@ class CollectionController extends Controller
     {
         date_default_timezone_set('Asia/Manila');
         //$date = $request->items['date'];
-        $date = date_format(date_create($request->items['date']),'d M Y');
+        $date = date_format(date_create($request->items['date']),'Y-m-d');
         $type = $request->items['type'];
         if($type=="BOTH"){
-            $data =  DB::connection('pgsql')->select("select * from collections where date_deposited = '$date'"); 
+            $data =  DB::connection('mysql')->select("select * from collections where date(date_deposited) = date('$date')"); 
         }else{
-            $data =  DB::connection('pgsql')->select("select * from collections where date_deposited = '$date' and type='$type'"); 
+            $data =  DB::connection('mysql')->select("select * from collections where date(date_deposited) = date('$date') and type='$type'"); 
         }
         
         $data_array = array();
@@ -137,6 +149,21 @@ class CollectionController extends Controller
             $data_array[] = $arr;
         }
         $datasets = array(["data"=>$data_array,"date"=>$date,]);
+        return response()->json($data_array);
+    }
+
+    public function getInvoices($id)
+    {
+        $data = DB::connection('mysql')->select("select t.invoiceno,c.id from transaction t left join collectibles c on c.transaction_id = t.id where c.status = 'UNPAID' and c.companyid=$id"); 
+        
+        $data_array = array();
+        foreach ($data as $key => $value) {
+            $arr = array();
+            $arr['id'] =  $value->id;
+            $arr['si'] =  $value->invoiceno;
+            $data_array[] = $arr;
+        }
+        $datasets = array(["data"=>$data_array]);
         return response()->json($data_array);
     }
 }

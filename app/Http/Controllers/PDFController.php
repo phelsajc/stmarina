@@ -25,7 +25,7 @@ class PDFController extends Controller
         $query = Diagnosis::where(['ps_patregisgter'=>$pspat])->first();
 
         $data = array();
-        $query_patient = DB::connection('pgsql')->select("select * from patients_1 where pk_pspatregisters='$pspat'");
+        $query_patient = DB::connection('mysql')->select("select * from patients_1 where pk_pspatregisters='$pspat'");
 
        //$query_diagnosis = Diagnostic_m::Where(['pspat'=>$pspat,'doctor'=>$getDoctor])->get();
         $query_diagnosis = Diagnostic_m::Where(['pspat'=>$pspat])->get();

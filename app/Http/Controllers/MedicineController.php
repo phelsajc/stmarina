@@ -8,7 +8,7 @@ class MedicineController extends Controller
 {
     public function searchMedicine(Request $request)
     {
-        $query = DB::connection('peds')->select("select * from bf_items where (itemdesc ILIKE '%$request->val%' OR genericname ILIKE '%$request->val%') and iscontroldrug = '0' and warehouse_id = '1075' limit 5");
+        $query = DB::connection('peds')->select("select * from bf_items where (itemdesc like '%$request->val%' OR genericname like '%$request->val%') and iscontroldrug = '0' and warehouse_id = '1075' limit 5");
         $data = array();
         foreach ($query as $key => $value ) {
             $arr = array();
@@ -32,7 +32,7 @@ class MedicineController extends Controller
     }
     
     public function searchDiagnostic(Request $request){
-        $query = DB::connection('peds')->select("select * from bf_items_lab where itemdesc ILIKE '%$request->val%' or shortname ILIKE '%$request->val%'");
+        $query = DB::connection('peds')->select("select * from bf_items_lab where itemdesc like '%$request->val%' or shortname like '%$request->val%'");
         $data = array();
         foreach ($query as $key => $value ) {
             $arr = array();

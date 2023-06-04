@@ -148,13 +148,11 @@ import Datepicker from 'vuejs-datepicker'
         data() {
             return {
                 form: {
-                    name: '',
-                    desc: '',
-                    //qty: '',
-                    uom: '',
-                    //dop:'',
-                    code:'',
-                    price:'',
+                    name: null,
+                    desc: null,
+                    uom: null,
+                    code: null,
+                    price: null,
                 },
                 user_info:{
                     patientname: '',
@@ -169,28 +167,35 @@ import Datepicker from 'vuejs-datepicker'
 
         methods:{
             addProduct(){
-                if(this.isNew){
-                    axios.post('/api/products-add',this.form)
-                    .then(res => {
-                        this.$router.push({name: 'product_list'});
+                if(this.form.name==null||this.form.desc==null||this.form.uom==null||this.form.code==null||this.form.price==null){
                         Toast.fire({
-                            icon: 'success',
-                            title: 'Saved successfully'
+                            icon: 'error',
+                            title: 'Please provide quantity'
                         });
-                    })
-                    .catch(error => this.errors = error.response.data.errors)
                 }else{
-                    axios.post('/api/products-update',{
-                        data: this.form,
-                        id: this.getId
-                    })
-                    .then(res => {
-                        Toast.fire({
-                            icon: 'success',
-                            title: 'Saved successfully'
-                        });
-                    })
-                    .catch(error => this.errors = error.response.data.errors)
+                    if(this.isNew){
+                        axios.post('/api/products-add',this.form)
+                        .then(res => {
+                            this.$router.push({name: 'product_list'});
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Saved successfully'
+                            });
+                        })
+                        .catch(error => this.errors = error.response.data.errors)
+                    }else{
+                        axios.post('/api/products-update',{
+                            data: this.form,
+                            id: this.getId
+                        })
+                        .then(res => {
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Saved successfully'
+                            });
+                        })
+                        .catch(error => this.errors = error.response.data.errors)
+                    }
                 }
             },      
             editForm(){                

@@ -57,9 +57,12 @@ return [
 
     'asset_url' => env('ASSET_URL', 'https://uk-emr.rivermedcenter.net/public/'), */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    /* 'url' => env('APP_URL', 'http://localhost'),
 
-    'asset_url' => env('ASSET_URL', null),
+    'asset_url' => env('ASSET_URL', null), */
+    'url' => env('APP_URL', 'http://stmarina.pharmacy.net'),
+
+    'asset_url' => env('ASSET_URL', 'http://stmarina.pharmacy.net/public'),
 
     //'asset_url' => env('ASSET_URL', null),
 

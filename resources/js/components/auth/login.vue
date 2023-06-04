@@ -1,5 +1,8 @@
 <template>
     <div class="hold-transition login-page">
+    <div class="text-center">                       
+        <img :src="img" alt="" class="profile-user-img img-fluid img-circle">
+    </div> <br>
         <div class="login-box">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
@@ -50,7 +53,7 @@
     export default {
         created(){
             if(!User.loggedIn()){
-                this.$router.push({name: '/'})
+              //  this.$router.push({name: '/'})
             }
         },
 
@@ -60,7 +63,8 @@
                     username: null,
                     password: null,
                 },
-                errors:{}
+                errors:{},
+                img: '../../../../backend2/stmarina.jpg'
             }
         },
         methods: {
@@ -75,7 +79,8 @@
                     })
                     //this.$router.push({name: 'home'})
                     
-                    this.$router.push({ name: 'transaction_list' })
+                    //this.$router.push({ name: 'transaction_list' })
+                    location  = '/transaction_list'
                     //location = "/all_employee"
                 })
                 .catch(error => this.errors = error.response.data.errors)

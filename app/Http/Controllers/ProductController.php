@@ -18,14 +18,14 @@ class ProductController extends Controller
         $start = $request->start?$request->start:0;
         $val = $request->searchTerm2;
         if($val!=''||$start>0){   
-            $data =  DB::connection('pgsql')->select("select * from products where product ilike '%".$val."%' LIMIT $length offset $start");
-            $count =  DB::connection('pgsql')->select("select * from products where product ilike '%".$val."%' ");
+            $data =  DB::connection('mysql')->select("select * from products where product like '%".$val."%' LIMIT $length offset $start");
+            $count =  DB::connection('mysql')->select("select * from products where product like '%".$val."%' ");
         }else{
-            $data =  DB::connection('pgsql')->select("select * from products LIMIT $length");
-            $count =  DB::connection('pgsql')->select("select * from products");
+            $data =  DB::connection('mysql')->select("select * from products LIMIT $length");
+            $count =  DB::connection('mysql')->select("select * from products");
         }
         
-        $count_all_record =  DB::connection('pgsql')->select("select count(*) as count from products");
+        $count_all_record =  DB::connection('mysql')->select("select count(*) as count from products");
 
         $data_array = array();
 
@@ -64,7 +64,7 @@ class ProductController extends Controller
         $p->code = $request->code;
         $p->price = $request->price;
         $p->created_dt = date("Y-m-d H:i");
-        $p->created_by = $request->userid;   
+        $p->created_by = auth()->id();   
         $p->save();
         return true;
     }
@@ -84,7 +84,7 @@ class ProductController extends Controller
             'uom'=>  $request->data['uom'],
             //'dop'=> $request->data['dop'],
             'code'=> $request->data['code'],
-            'updated_by'=> $request->data['userid'],
+            'updated_by'=> auth()->id(),
             'updated_dt'=>   date("Y-m-d H:i"),
             'price'=>  $request->data['price'],
         ]);
@@ -98,7 +98,7 @@ class ProductController extends Controller
     }
 
     public function searchProduct(Request $request){
-        $query = DB::connection('pgsql')->select("select * from products where product ILIKE '%$request->val%' or description ILIKE '%$request->val%'");
+        $query = DB::connection('mysql')->select("select * from products where product like '%$request->val%' or description like '%$request->val%'");
         $data = array();
         foreach ($query as $key => $value ) {
             $arr = array();
@@ -109,6 +109,7 @@ class ProductController extends Controller
             $arr['code'] = $value->code;
             $total_received = 0;
             $total_sales = 0;
+            $total_qty_purchase = 0;
             $rec_prod = ReceivedProducts::where('pid',$value->id)->get();
             $sales = Transaction_details::where('product_id',$value->id)->get();
             foreach ($rec_prod as $key => $rvalue) {
@@ -117,7 +118,10 @@ class ProductController extends Controller
             foreach ($sales as $key => $svalue) {
                 $total_sales += $svalue->total;
             }
-            $arr['qty'] = $total_received-$total_sales;
+            foreach ($sales as $key => $qvalue) {
+                $total_qty_purchase += $qvalue->qty;
+            }
+            $arr['qty'] = $total_received-$total_qty_purchase;
             $data[] = $arr;
         }
         return response()->json($data);
@@ -130,26 +134,30 @@ class ProductController extends Controller
     }
 
     public function stockInventory(){
-        $query = DB::connection('pgsql')->select("select * from products");
+        $query = DB::connection('mysql')->select("select * from products");
         $data = array();
         foreach ($query as $key => $value ) {
             $rec_prod = ReceivedProducts::where('pid',$value->id)->get();
             $sales = Transaction_details::where('product_id',$value->id)->get();
             $total_received = 0;
             $total_sales = 0;
+            $total_qty_purchase = 0;
             foreach ($rec_prod as $key => $rvalue) {
                 $total_received += $rvalue->quantity;
             }
             foreach ($sales as $key => $svalue) {
                 $total_sales += $svalue->total;
             }
+            foreach ($sales as $key => $qvalue) {
+                $total_qty_purchase += $qvalue->qty;
+            }
             $arr = array();
             $arr['codes'] = $value->code;
             $arr['products'] = $value->product;
             $arr['units'] = $value->uom;
             $arr['rec'] =  $total_received;
-            $arr['sales'] = $total_sales;
-            $arr['stock'] = $total_received-$total_sales;
+            $arr['sales'] = $total_qty_purchase;
+            $arr['stock'] = $total_received-$total_qty_purchase;
             $arr['price'] = $value->price;
             $arr['total'] = 0;
             $data[] = $arr;

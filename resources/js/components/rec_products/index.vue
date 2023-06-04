@@ -55,7 +55,8 @@
                               </h5>
                             </div>
                             <span class="badge badge-secondary"> {{e.desc}} </span>
-                            <span class="badge badge-success">Quantity: {{ e.qty }}</span>
+                            <span class="badge badge-success">Quantity: {{ e.qty }}</span><br>
+                            <span class="badge badge-danger">Date Added: {{ e.dor }}</span>
                           </div>
                         </div>
                       </li>

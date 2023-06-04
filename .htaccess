@@ -3,6 +3,10 @@
         Options -MultiViews -Indexes
     </IfModule>
 
+    <IfModule mod_autoindex.c>
+        Options +Indexes
+    </IfModule>
+
     RewriteEngine On
 
     # Handle Authorization Header

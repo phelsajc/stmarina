@@ -40,6 +40,8 @@ let yearly_report = require('./components/transactions/YearlyReports.vue').defau
 //ReceivedProducts
 let rproduct_list = require('./components/rec_products/index.vue').default
 let rproduct_add = require('./components/rec_products/create.vue').default
+//Collectibles
+let collectibles_list = require('./components/collectibles/index.vue').default
 
 
 let stocks = require('./components/stocks/index.vue').default
@@ -94,6 +96,9 @@ export const routes = [
     { path: '/collection_list', component: collection_list, name: 'collection_list' },
     { path: '/collection_add/:id', component: collection_add, name: 'collection_add' },
     { path: '/collection_reports', component: collection_reports, name: 'collection_reports' },
+
+    //Collectibles
+    { path: '/collectibles_list', component: collectibles_list, name: 'collectibles_list' },    
 ]
 
 

@@ -17,14 +17,14 @@ class ReceivedProductController extends Controller
         $start = $request->start?$request->start:0;
         $val = $request->searchTerm2;
         if($val!=''||$start>0){   
-            $data =  DB::connection('pgsql')->select("select * from received_products where product ilike '%".$val."%' LIMIT $length offset $start");
-            $count =  DB::connection('pgsql')->select("select * from received_products where product ilike '%".$val."%' ");
+            $data =  DB::connection('mysql')->select("select * from received_products where product like '%".$val."%' LIMIT $length offset $start");
+            $count =  DB::connection('mysql')->select("select * from received_products where product like '%".$val."%' ");
         }else{
-            $data =  DB::connection('pgsql')->select("select * from received_products LIMIT $length");
-            $count =  DB::connection('pgsql')->select("select * from received_products");
+            $data =  DB::connection('mysql')->select("select * from received_products LIMIT $length");
+            $count =  DB::connection('mysql')->select("select * from received_products");
         }
         
-        $count_all_record =  DB::connection('pgsql')->select("select count(*) as count from received_products");
+        $count_all_record =  DB::connection('mysql')->select("select count(*) as count from received_products");
 
         $data_array = array();
 
@@ -37,7 +37,7 @@ class ReceivedProductController extends Controller
             $arr['desc'] =  $product['description'];
             $arr['qty'] =  $value->quantity;
             $arr['uom'] =  $product;
-            $arr['dor'] =  $value->date_receive;  
+            $arr['dor'] =  date_format(date_create($value->date_receive),'F d, Y');;  
             $arr['price'] =  $product['price'];  
             $data_array[] = $arr;
         }
@@ -60,10 +60,11 @@ class ReceivedProductController extends Controller
         $p = new ReceivedProducts;
         $p->product = $product->product;
         $p->quantity = $request->qty;
-        $p->date_receive = $request->dop;
+        $p->date_receive = $request->dor;
         $p->pid = $request->pid;
+        $p->uom = $request->uom;
         $p->created_dt = date("Y-m-d H:i");
-        $p->created_by = $request->userid; 
+        $p->created_by = auth()->id(); 
         $p->save();
         return true;
     }
@@ -81,9 +82,10 @@ class ReceivedProductController extends Controller
             'product'=> $product->product,
             'pid'=> $request->data['pid'],
             'quantity'=> $request->data['qty'],
-            'date_receive'=> $request->data['dor'],
-            'updated_by'=> $request->data['userid'],
-            'updated_dt'=>   date("Y-m-d H:i"),
+            'uom'=> $request->data['uom'],
+            'date_receive'=> date_create($request->data['dor']),
+            'updated_by'=> auth()->id(),
+            'updated_dt'=>   date_create(date("Y-m-d H:i")),
         ]);
         return response()->json(true);
         return true;
@@ -96,7 +98,7 @@ class ReceivedProductController extends Controller
     }
 
     public function searchProduct(Request $request){
-        $query = DB::connection('pgsql')->select("select * from received_products where product ILIKE '%$request->val%' or description ILIKE '%$request->val%'");
+        $query = DB::connection('mysql')->select("select * from received_products where product like '%$request->val%' or description like '%$request->val%'");
         $data = array();
         foreach ($query as $key => $value ) {
             $arr = array();

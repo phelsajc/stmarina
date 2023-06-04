@@ -53,6 +53,8 @@
                     <thead>
                       <tr>
                         <th>Company</th>
+                        <!-- <th>Qty</th>
+                        <th>Price</th> -->
                         <th>Invoice No.</th>
                         <th>Total</th>
                       </tr>
@@ -62,6 +64,12 @@
                         <td>
                           {{ e.company }}
                         </td>
+                        <!-- <td>
+                          {{ e.qty }}
+                        </td>
+                        <td>
+                          {{ e.price }}
+                        </td> -->
                         <td>
                           {{ e.inv }}
                         </td>
@@ -75,6 +83,12 @@
                         <td>
                         
                         </td>
+                        <!-- <td>
+                        
+                        </td>
+                        <td>
+                        
+                        </td> -->
                         <td>
                             <strong> Total:   {{ grand_total }}</strong>
                         </td>

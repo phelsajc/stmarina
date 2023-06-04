@@ -90,11 +90,10 @@
                             <select
                               class="form-control"
                               v-model="form.uom"
-                              readonly
                             >
-                              <option value="Staff">PCS</option>
-                              <option value="Doctor">KG</option>
-                              <option value="Administrator">LT</option>
+                              <option value="PFS">PFS</option>
+                              <option value="BXS">BXS</option>
+                              <option value="BOT">BOT</option>
                             </select>
                             <small
                               class="text-danger"
@@ -220,28 +219,35 @@
   
           methods:{
               addProduct(){
-                if(this.isNew){
-                    axios.post('/api/rec_products-add',this.form)
-                    .then(res => {
-                        this.$router.push({name: 'rproduct_list'});
+                if(this.form.qty==null||this.form.qty==""){
                         Toast.fire({
-                            icon: 'success',
-                            title: 'Saved successfully'
+                            icon: 'error',
+                            title: 'Please provide quantity'
                         });
-                    })
-                    .catch(error => this.errors = error.response.data.errors)
                 }else{
-                    axios.post('/api/rec_products-update',{
-                        data: this.form,
-                        id: this.getId
-                    })
-                    .then(res => {
-                        Toast.fire({
-                            icon: 'success',
-                            title: 'Saved successfully'
-                        });
-                    })
-                    .catch(error => this.errors = error.response.data.errors)
+                  if(this.isNew){
+                      axios.post('/api/rec_products-add',this.form)
+                      .then(res => {
+                          this.$router.push({name: 'rproduct_list'});
+                          Toast.fire({
+                              icon: 'success',
+                              title: 'Saved successfully'
+                          });
+                      })
+                      .catch(error => this.errors = error.response.data.errors)
+                  }else{
+                      axios.post('/api/rec_products-update',{
+                          data: this.form,
+                          id: this.getId
+                      })
+                      .then(res => {
+                          Toast.fire({
+                              icon: 'success',
+                              title: 'Saved successfully'
+                          });
+                      })
+                      .catch(error => this.errors = error.response.data.errors)
+                  }
                 }
               },
               getPatientInformation(){
@@ -253,7 +259,6 @@
                   let id = this.$route.params.id
                   axios.get('/api/rec_products-detail/'+id)
                       .then(({ data }) => (
-                      console.log("l "+data?data:0),
                           this.form.pid =  data.pid,
                           this.form.desc = data.description,
                           this.form.qty = data.quantity,
@@ -265,7 +270,7 @@
                   .catch(console.log('error'))
               },
               getProducts(){
-                  axios.get('/api/getProducts/')
+                  axios.get('/api/getProducts')
                   .then(({data}) => ( this.products = data))
                   .catch()
               },

@@ -16,14 +16,14 @@ class CompanyController extends Controller
         $start = $request->start?$request->start:0;
         $val = $request->searchTerm2;
         if($val!=''||$start>0){   
-            $data =  DB::connection('pgsql')->select("select * from company where company ilike '%".$val."%' LIMIT $length offset $start");
-            $count =  DB::connection('pgsql')->select("select * from company where company ilike '%".$val."%' ");
+            $data =  DB::connection('mysql')->select("select * from company where company like '%".$val."%' LIMIT $length offset $start");
+            $count =  DB::connection('mysql')->select("select * from company where company like '%".$val."%' ");
         }else{
-            $data =  DB::connection('pgsql')->select("select * from company LIMIT $length");
-            $count =  DB::connection('pgsql')->select("select * from company");
+            $data =  DB::connection('mysql')->select("select * from company LIMIT $length");
+            $count =  DB::connection('mysql')->select("select * from company");
         }
         
-        $count_all_record =  DB::connection('pgsql')->select("select count(*) as count from company");
+        $count_all_record =  DB::connection('mysql')->select("select count(*) as count from company");
 
         $data_array = array();
 

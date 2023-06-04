@@ -263,18 +263,18 @@ class UserController extends Controller
         $val = $request->searchTerm2;
         $dd=1;
         /* if($val!=''||$start>0){   
-            $dd =  "select * from users where patientname ilike '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length offset $start";
-            $data =  DB::connection('pgsql')->select("select * from users where patientname ilike '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length offset $start");
-            $count =  DB::connection('pgsql')->select("select * from users where patientname ilike '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' ");
+            $dd =  "select * from users where patientname like '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length offset $start";
+            $data =  DB::connection('mysql')->select("select * from users where patientname like '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length offset $start");
+            $count =  DB::connection('mysql')->select("select * from users where patientname like '%".$val."%' and cast(registrydate as date) >= '".date("Y-m-d")."' ");
         }else{
-            $data =  DB::connection('pgsql')->select("select * from users where cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length");
-            $count =  DB::connection('pgsql')->select("select * from users where cast(registrydate as date) >= '".date("Y-m-d")."'");
+            $data =  DB::connection('mysql')->select("select * from users where cast(registrydate as date) >= '".date("Y-m-d")."' LIMIT $length");
+            $count =  DB::connection('mysql')->select("select * from users where cast(registrydate as date) >= '".date("Y-m-d")."'");
         } */
 
-        $data =  DB::connection('pgsql')->select("select * from users LIMIT $length");
-        $count =  DB::connection('pgsql')->select("select * from users");
+        $data =  DB::connection('mysql')->select("select * from users LIMIT $length");
+        $count =  DB::connection('mysql')->select("select * from users");
         
-        $count_all_record =  DB::connection('pgsql')->select("select count(*) as count from users");
+        $count_all_record =  DB::connection('mysql')->select("select count(*) as count from users");
 
         $data_array = array();
 

@@ -59,6 +59,13 @@
                                         <small class="text-danger" v-if="errors.invoiceno">{{ errors.invoiceno[0] }}</small>
                                     </div>
                                 </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Terms:</label>
+                                        <input type="text" class="form-control" v-model="transactionDetail.terms">
+                                        <small class="text-danger" v-if="errors.terms">{{ errors.terms[0] }}</small>
+                                    </div>
+                                </div>
                             </div>
 
                             
@@ -203,6 +210,7 @@ import Datepicker from 'vuejs-datepicker'
                 companies:[],
                 selectdD: [],
                 transactionDetail:{
+                    terms: 0,
                     invoiceno: '',
                     dot: '',
                     companyid: 0
@@ -229,7 +237,7 @@ import Datepicker from 'vuejs-datepicker'
         },
         computed: {
             total() {
-                    return this.itemList2.reduce((sum, item) => sum + item.total, 0);     
+                    return this.itemList2.reduce((sum, item) => sum + parseFloat(item.total), 0);     
                 /* if(this.isNew){
                     return this.itemList2.reduce((sum, item) => sum + item.total, 0);                    
                 }else{

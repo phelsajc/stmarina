@@ -26,5 +26,6 @@ class Collections extends Model
         'dsno',
         'created_by',
         'created_dt',
+        'date_confirmed',
     ];
 }

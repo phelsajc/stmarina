@@ -97,7 +97,11 @@ Route::match(['get','post'],'collection','CollectionController@index');
 Route::match(['get','post'],'collection-detail/{id}','CollectionController@edit');
 Route::match(['get','post'],'collection-delete/{id}','CollectionController@delete');
 Route::match(['get','post'],'collection-report','CollectionController@reports');
+Route::match(['get','post'],'collection-getInvoices/{id}','CollectionController@getInvoices');
 
+
+#Collectibles
+Route::match(['get','post'],'collectibles-report','CollectiblesController@reports');
 
 
 

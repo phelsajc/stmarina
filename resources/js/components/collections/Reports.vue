@@ -25,7 +25,7 @@
                     
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">&nbsp;</h3>
+                  <h3 class="card-title">Report</h3>
                  
                 </div>
 
