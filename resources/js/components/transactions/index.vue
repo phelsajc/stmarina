@@ -57,7 +57,9 @@
                             </h5>
                           </div>
 
-                          <span class="badge badge-secondary"> Invoice: {{e.invno}}</span>
+                          <span class="badge badge-secondary"> Invoice: {{e.invno}}</span> <br>
+                          <span class="badge badge-success"> Date: {{e.tdate}}</span><br>
+                          <span class="badge badge-info"> Total Amount: {{e.total}}</span>
                         </div>
                       </div>
                     </li>

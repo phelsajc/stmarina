@@ -27,15 +27,35 @@
                 </div>
 
                 <div class="card-body">
+                  <form class="user"  enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group ">
+                                        <label>Date  Received</label>
+                                        <datepicker name="birthdate" :bootstrap-styling=true></datepicker>
+                                        <small class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>&nbsp;</label> <br>
+                            <button type="submit" class="btn btn-success">
+                            Search
+                            </button>
+                                    </div>
+                                </div>
+                            </div>
 
+                            
+                        </form>
                   <table class="table">
                     <thead>
                       <tr>
                         <!-- <th>Codes</th> -->
                         <th>Products</th>
                         <th>Units</th>
-                        <th>Received</th>
-                        <th>Sales</th>
+                        <!-- <th>Received</th> -->
+                        <!-- <th>Sales</th> -->
                         <th>Stock</th>
                         <!-- <th>Price</th> -->
                         <!-- <th></th> -->
@@ -52,12 +72,12 @@
                         <td>
                           {{ e.units }}
                         </td>
-                        <td>
+                        <!-- <td>
                          <strong> {{ e.rec }}</strong>
-                        </td>
-                        <td>
+                        </td> -->
+                        <!-- <td>
                           <strong>  {{ e.sales }}</strong>
-                        </td>
+                        </td> -->
                         <td>
                           <strong> {{ e.stock }}</strong>
                         </td>
@@ -96,6 +116,7 @@
 
 <script type="text/javascript">
 
+import Datepicker from 'vuejs-datepicker'
   export default {
 created() {
           if(!User.loggedIn()){
@@ -110,6 +131,9 @@ created() {
               items:[]
           }
       },
+        components: {
+            Datepicker
+        },
       computed:{
           filtersearch(){
               return this.employees.filter(e => {

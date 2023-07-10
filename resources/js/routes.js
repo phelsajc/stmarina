@@ -32,7 +32,9 @@ let collection_add = require('./components/collections/create.vue').default
 let collection_reports = require('./components/collections/Reports.vue').default
 //Transaction
 let transaction = require('./components/transactions/create.vue').default
+let free_transaction = require('./components/transactions/free_create.vue').default
 let transaction_list = require('./components/transactions/index.vue').default
+let transaction_free_list = require('./components/transactions/free_index.vue').default
 let transaction_report = require('./components/transactions/DailyReports.vue').default
 //reports
 let reports = require('./components/transactions/Reports.vue').default
@@ -79,7 +81,9 @@ export const routes = [
     
     //Transaction
     { path: '/transaction/:id', component: transaction, name: 'transaction' },
+    { path: '/free_transaction/:id', component: free_transaction, name: 'free_transaction' },
     { path: '/transaction_list', component: transaction_list, name: 'transaction_list' },
+    { path: '/transaction_free_list', component: transaction_free_list, name: 'transaction_free_list' },
     { path: '/transaction_report', component: transaction_report, name: 'transaction_report' },
     
     //Reports

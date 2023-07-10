@@ -37,6 +37,7 @@ class TransactionController extends Controller
             $arr['refno'] =  $value->referenceno;
             $arr['invno'] =  $value->invoiceno;
             $arr['id'] =  $value->id;
+            $arr['total'] =  $value->total;
             $arr['tdate'] =  date_format(date_create($value->transactiondate),"F d Y");
             $data_array[] = $arr;
         }
