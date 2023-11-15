@@ -34,6 +34,7 @@ class ReceivedProductController extends Controller
             $arr['id'] =  $value->id;
             $arr['pid'] =  $value->pid;
             $arr['name'] =  $value->product;
+            $arr['remarks'] =  $value->remarks;
             $arr['desc'] =  $product['description'];
             $arr['qty'] =  $value->quantity;
             $arr['uom'] =  $product;
@@ -60,8 +61,9 @@ class ReceivedProductController extends Controller
         $p = new ReceivedProducts;
         $p->product = $product->product;
         $p->quantity = $request->qty;
-        $p->date_receive = $request->dor;
+        $p->date_receive =  date_create($request->dor);
         $p->pid = $request->pid;
+        $p->remarks = $request->remarks;
         $p->uom = $request->uom;
         $p->created_dt = date("Y-m-d H:i");
         $p->created_by = auth()->id(); 
@@ -83,6 +85,7 @@ class ReceivedProductController extends Controller
             'pid'=> $request->data['pid'],
             'quantity'=> $request->data['qty'],
             'uom'=> $request->data['uom'],
+            'remarks'=> $request->data['remarks'],
             'date_receive'=> date_create($request->data['dor']),
             'updated_by'=> auth()->id(),
             'updated_dt'=>   date_create(date("Y-m-d H:i")),

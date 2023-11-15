@@ -139,19 +139,18 @@
                         </div>
                         <div class="col-sm-4">
                           <div class="form-group">
-                            <label>Code </label>
+                            <label>Remarks </label>
                             <input
                               type="text"
                               class="form-control"
-                              id=""
-                              placeholder="Enter Product Code"
-                              v-model="form.code"
-                              readonly
+                              id="remarks"
+                              placeholder="Enter Remarks"
+                              v-model="form.remarks"
                             />
                             <small
                               class="text-danger"
-                              v-if="errors.code"
-                              >{{ errors.code[0] }}</small
+                              v-if="errors.remarks"
+                              >{{ errors.remarks[0] }}</small
                             >
                           </div>
                         </div>
@@ -160,6 +159,9 @@
                       <div class="form-group">
                         <button type="submit" class="btn btn-primary btn-block">
                           Submit
+                        </button>
+                        <button type="button" @click="deleteRecord()" class="btn btn-danger btn-block">
+                          Delete
                         </button>
                       </div>
                     </form>
@@ -202,7 +204,7 @@
                       qty: '',
                       uom: '',
                       dor:'',
-                      code:'',
+                      remarks:'',
                       price:0,
                   },
                   user_info:{
@@ -264,7 +266,7 @@
                           this.form.qty = data.quantity,
                           this.form.uom = data.uom,
                           this.form.dor = data.date_receive,
-                          this.form.code = data.code,
+                          this.form.remarks = data.remarks,
                           this.form.price = data.price
                   ))
                   .catch(console.log('error'))
@@ -282,7 +284,35 @@
                           this.form.code =  data.code
                   ))
                   .catch(console.log('error'))
-              }
+              },
+              deleteRecord(id){
+                  Swal.fire({
+                      title: 'Are you sure?',
+                      text: "You won't be able to revert this!",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Yes, delete it!'
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          axios.get('/api/rec_products-delete/'+this.$route.params.id)
+                          .then(() => {
+                              this.$router.push("/rproduct_list").catch(()=>{});
+                          })
+                          .catch(() =>{
+                              //this.$router.push({name: 'all_employee'})
+                              this.$router.push("/rproduct_list").catch(()=>{});
+                          })
+
+                          Swal.fire(
+                          'Deleted!',
+                          'Your file has been deleted.',
+                          'success'
+                          )
+                      }
+                  })
+              },
           }
       }
   </script>

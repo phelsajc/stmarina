@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\Transaction;
 use App\Model\Transaction_details;
+use App\Model\TransactionFree;
+use App\Model\Transaction_detailsFree;
 use App\Model\Company;
 use App\Model\Collectibles;
 use DB;
@@ -80,6 +82,7 @@ class TransactionController extends Controller
             $d->product_id = $val['id'];
             $d->product = $val['product'];
             $d->qty = $val['qty'];
+            $d->free = $val['isfree']?1:0;
             $d->companyid = $request->head['companyid']; 
             $d->transactiondate = date_create($request->head['dot']);
             $d->total = $val['total'];

@@ -87,9 +87,9 @@
           </li>
 
           <li class="nav-item"
-            :class="{ 'menu-open': this.$route.name == 'transaction' || this.$route.name == 'transaction_list' || this.$route.name == 'free_transaction' || this.$route.name == 'transaction_free_list' || this.$route.name == 'reports' || this.$route.name == 'yearly_report' || this.$route.name == 'transaction_report' }">
+            :class="{ 'menu-open': this.$route.name == 'transaction' || this.$route.name == 'transaction' || this.$route.name == 'transaction_list' || this.$route.name == 'free_transaction' || this.$route.name == 'transaction_free_list' || this.$route.name == 'reports' || this.$route.name == 'yearly_report' || this.$route.name == 'transaction_report' }">
             <a href="#" class="nav-link"
-              :class="{ 'active': this.$route.name == 'transaction_list' || this.$route.name == 'free_transaction' || this.$route.name == 'transaction_free_list' || this.$route.name == 'reports' || this.$route.name == 'transaction_report' }">
+              :class="{ 'active': this.$route.name == 'transaction_list' || this.$route.name == 'transaction' || this.$route.name == 'free_transaction' || this.$route.name == 'transaction_free_list' || this.$route.name == 'reports' || this.$route.name == 'transaction_report' }">
               <i class="nav-icon fas fa-file-invoice"></i>
               <p>
                 Invoice
@@ -104,13 +104,13 @@
                     Transactions
                   </a></router-link>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <router-link to="/transaction_free_list" class="collapse-item"> <a href="#" class="nav-link" id="usermenu"
                     :class="{ 'active': this.$route.name == 'transaction_free_list' || this.$route.name == 'free_transaction' }">
                     <i class="far fa-circle nav-icon"></i>
                     Free Items
                   </a></router-link>
-              </li>
+              </li> -->
 
               <li class="nav-item"
                 :class="{ 'menu-open': this.$route.name == 'reports' || this.$route.name == 'yearly_report' || this.$route.name == 'transaction_report' }">

@@ -20,5 +20,6 @@ class Transaction_details extends Model
         'qty',
         'total',
         'price',
+        'free',
     ];
 }

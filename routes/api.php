@@ -80,7 +80,11 @@ Route::match(['get','post'],'getTransactionHeader/{id}','TransactionController@g
 Route::match(['get','post'],'report','TransactionController@report');
 Route::match(['get','post'],'DailyReport','TransactionController@DailyReport');
 Route::match(['get','post'],'YearlyReport','TransactionController@yearly_report');
-
+Route::match(['get','post'],'saveTransactionFree','TransactionFreeController@store');
+Route::match(['get','post'],'updateTransactionFree','TransactionFreeController@update');
+Route::match(['get','post'],'getTransactionFree/{id}','TransactionFreeController@getTransaction');
+Route::match(['get','post'],'getTransactionHeaderFree/{id}','TransactionFreeController@getTransactionHeader');
+Route::match(['get','post'],'transactionsFree','TransactionFreeController@index');
 
 #ReceivedProducts
 Route::match(['get','post'],'rec_products-add','ReceivedProductController@store');

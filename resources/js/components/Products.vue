@@ -63,6 +63,7 @@
                     'description': value.description,
                     'total': value.total,
                     'price': value.price,
+                    'isfree': value.isFree,
                     'qty': value.qty,
                     'id': value.id,
                 });

@@ -207,7 +207,7 @@ created() {
               this.countRecords = null
             this.form.start = 0
             this.isHidden =  false
-              axios.post('/api/products',this.form)
+              axios.post('/api/rec_products',this.form)
               .then(res => {
                 this.employees = res.data[0].data
                 this.countRecords =res.data[0].count
@@ -219,7 +219,7 @@ created() {
           getPageNo(id){
             this.form.start = (id-1) * 10
             this.isHidden =  false
-            axios.post('/api/products',this.form)
+            axios.post('/api/rec_products',this.form)
               .then(res => {
                 this.employees = res.data[0].data
                 this.countRecords =res.data[0].count

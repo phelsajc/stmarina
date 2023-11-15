@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Model\Products;
 use App\Model\ReceivedProducts;
 use App\Model\Transaction_details;
+use App\Model\Transaction_detailsFree;
 use DB;
 
 class ProductController extends Controller
@@ -139,6 +140,7 @@ class ProductController extends Controller
         foreach ($query as $key => $value ) {
             $rec_prod = ReceivedProducts::where('pid',$value->id)->get();
             $sales = Transaction_details::where('product_id',$value->id)->get();
+            //$salesFree = Transaction_detailsFree::where('product_id',$value->id)->get();
             $total_received = 0;
             $total_sales = 0;
             $total_qty_purchase = 0;
@@ -149,17 +151,22 @@ class ProductController extends Controller
                 $total_sales += $svalue->total;
             }
             foreach ($sales as $key => $qvalue) {
-                $total_qty_purchase += $qvalue->qty;
+                //if(!$qvalue->free){
+                    $total_qty_purchase += $qvalue->qty;
+                //}
             }
+            /* foreach ($salesFree as $key => $qvalue) {
+                $total_qty_purchase += $qvalue->qty;
+            } */
             $arr = array();
-            $arr['codes'] = $value->code;
+            //$arr['codes'] = $value->code;
             $arr['products'] = $value->product;
             $arr['units'] = $value->uom;
-            $arr['rec'] =  $total_received;
-            $arr['sales'] = $total_qty_purchase;
+            //$arr['rec'] =  $total_received;
+            //$arr['sales'] = $total_qty_purchase;
             $arr['stock'] = $total_received-$total_qty_purchase;
-            $arr['price'] = $value->price;
-            $arr['total'] = 0;
+            //$arr['price'] = $value->price;
+            //$arr['total'] = 0;
             $data[] = $arr;
         }
         return response()->json($data);
